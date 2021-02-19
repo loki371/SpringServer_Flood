@@ -25,6 +25,18 @@ public class User {
 
 	@NotBlank
 	@Size(max = 50)
+	private String firstname;
+
+	@NotBlank
+	@Size(max = 50)
+	private String lastname;
+
+	@NotBlank
+	@Size(max = 11)
+	private String phone;
+
+	@NotBlank
+	@Size(max = 50)
 	@Email
 	private String email;
 
@@ -32,7 +44,7 @@ public class User {
 	@Size(max = 120)
 	private String password;
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY)
 	@JoinTable(	name = "user_roles", 
 				joinColumns = @JoinColumn(name = "user_id"), 
 				inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -41,8 +53,11 @@ public class User {
 	public User() {
 	}
 
-	public User(String username, String email, String password) {
+	public User(String username, String firstname, String lastname, String phone, String email, String password) {
 		this.username = username;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.phone = phone;
 		this.email = email;
 		this.password = password;
 	}
@@ -85,5 +100,21 @@ public class User {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	public String getFirstname() { return this.firstname; }
+
+	public void setFirstname(String name) { this.firstname = name; }
+
+	public String getLastname() { return this.lastname; }
+
+	public void setLastname(String name) { this.lastname = name; }
+
+	public String getPhone() { return this.phone; }
+
+	public void setPhone(String phone) { this.phone = phone; }
+
+	public void showInfo() {
+		System.out.println(id + " username: " + username + " first-last: " + firstname + "-" + lastname + "; " + phone + "; " + email + "; pass: " + password);
 	}
 }

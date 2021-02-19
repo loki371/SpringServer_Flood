@@ -60,7 +60,8 @@ public class AuthController {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = jwtUtils.generateJwtToken(authentication);
 		
-		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();		
+		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
 		List<String> roles = userDetails.getAuthorities().stream()
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
@@ -87,7 +88,10 @@ public class AuthController {
 		}
 
 		// Create new user's account
-		User user = new User(signUpRequest.getUsername(), 
+		User user = new User(signUpRequest.getUsername(),
+							 signUpRequest.getFirstname(),
+							 signUpRequest.getLastname(),
+							 signUpRequest.getPhone(),
 							 signUpRequest.getEmail(),
 							 encoder.encode(signUpRequest.getPassword()));
 

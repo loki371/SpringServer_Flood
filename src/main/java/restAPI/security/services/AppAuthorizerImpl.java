@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 @Service("appAuthorizer")
-public class AppAuthorizerImpl {
+public class AppAuthorizerImpl implements AppAuthorizer {
     private final Logger logger = LoggerFactory.getLogger(AppAuthorizerImpl.class);
 
     public boolean authorize(Authentication authentication, String action, Object callerObj) {
