@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import restAPI.models.ERole;
-import restAPI.models.Role;
+import restAPI.models.role.ERole;
+import restAPI.models.role.Role;
 import restAPI.models.User;
 import restAPI.payload.request.LoginRequest;
 import restAPI.payload.request.SignupRequest;
@@ -111,8 +111,8 @@ public class AuthController {
 					roles.add(adminRole);
 
 					break;
-				case "mod":
-					Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+				case "res":
+					Role modRole = roleRepository.findByName(ERole.ROLE_RESCUER)
 							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 					roles.add(modRole);
 

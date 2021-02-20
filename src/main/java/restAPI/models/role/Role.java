@@ -1,4 +1,4 @@
-package restAPI.models;
+package restAPI.models.role;
 
 import javax.persistence.*;
 
@@ -14,7 +14,6 @@ public class Role {
 	private ERole name;
 
 	public Role() {
-
 	}
 
 	public Role(ERole name) {
