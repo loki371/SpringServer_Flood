@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import restAPI.models.role.Role;
+import restAPI.models.role.RoleRescuer;
+import restAPI.models.role.RoleUser;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -56,6 +58,12 @@ public class User {
 				inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 
+	@OneToOne(mappedBy = "user", optional = true, cascade = CascadeType.ALL)
+	private RoleUser roleUser;
+
+	@OneToOne(mappedBy = "user", optional = true, cascade = CascadeType.ALL)
+	private RoleRescuer roleRescuer;
+
 	public User(String username, String firstname, String lastname, String phone, String email, String password) {
 		this.username = username;
 		this.firstname = firstname;
@@ -63,6 +71,17 @@ public class User {
 		this.phone = phone;
 		this.email = email;
 		this.password = password;
+	}
+
+	public User(String username, String firstname, String lastname, String phone, String email, String password, RoleUser roleUser, RoleRescuer roleRescuer) {
+		this.username = username;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.phone = phone;
+		this.email = email;
+		this.password = password;
+		this.roleUser = roleUser;
+		this.roleRescuer = roleRescuer;
 	}
 
 	public void showInfo() {

@@ -27,7 +27,7 @@ import restAPI.payload.request.LoginRequest;
 import restAPI.payload.request.SignupRequest;
 import restAPI.payload.response.JwtResponse;
 import restAPI.payload.response.MessageResponse;
-import restAPI.repository.RoleRepository;
+import restAPI.repository.role.RoleRepository;
 import restAPI.repository.UserRepository;
 import restAPI.security.jwt.JwtUtils;
 import restAPI.security.services.UserDetailsImpl;
