@@ -37,6 +37,6 @@ public class SpringBootApplication implements CommandLineRunner {
 		person.setRoleUser(roleUser);
 
 		// Lưu vào db
-		userRepository.save(person);
+//		userRepository.save(person);
 	}
 }

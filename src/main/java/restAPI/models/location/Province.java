@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
-@Table(name="province")
+@Table(name="provinces")
 @Getter @Setter @NoArgsConstructor
 public class Province {
     @Id

@@ -1,9 +1,12 @@
 package restAPI.models.location;
 
+import restAPI.models.road.Road;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "ward")
+@Table(name = "wards")
 public class Ward {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
