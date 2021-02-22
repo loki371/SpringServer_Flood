@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import restAPI.models.role.ERole;
 import restAPI.models.role.Role;
-import restAPI.models.User;
+import restAPI.models.UserInfo;
 import restAPI.payload.request.LoginRequest;
 import restAPI.payload.request.SignupRequest;
 import restAPI.payload.response.JwtResponse;
@@ -88,7 +88,7 @@ public class AuthController {
 		}
 
 		// Create new user's account
-		User user = new User(signUpRequest.getUsername(),
+		UserInfo user = new UserInfo(signUpRequest.getUsername(),
 							 signUpRequest.getFirstname(),
 							 signUpRequest.getLastname(),
 							 signUpRequest.getPhone(),

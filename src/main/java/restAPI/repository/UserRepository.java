@@ -5,11 +5,11 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import restAPI.models.User;
+import restAPI.models.UserInfo;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-	Optional<User> findByUsername(String username);
+public interface UserRepository extends JpaRepository<UserInfo, Long> {
+	Optional<UserInfo> findByUsername(String username);
 
 	Boolean existsByUsername(String username);
 

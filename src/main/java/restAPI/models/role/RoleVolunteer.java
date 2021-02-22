@@ -5,30 +5,24 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import restAPI.models.UserInfo;
 import restAPI.models.location.Ward;
-import restAPI.models.registration.Registration;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "role_rescuer")
-@Getter @Setter @NoArgsConstructor
-public class RoleRescuer {
+@Table(name = "role_volunteer")
+@Getter
+@Setter
+@NoArgsConstructor
+public class RoleVolunteer {
     @Id
     private Long id;
 
-    @OneToOne(optional = false)
+    @OneToOne
     @PrimaryKeyJoinColumn
     private UserInfo user;
-
-    @OneToOne
-    private Registration inSaving;
-
-    private Float score;
 
     @ManyToOne
     private Ward ward;
 
-    public RoleRescuer(UserInfo user) {
-        this.user = user;
-    }
+    private Float score;
 }

@@ -1,10 +1,9 @@
 package restAPI;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import restAPI.models.User;
+import restAPI.models.UserInfo;
 import restAPI.models.role.RoleRescuer;
 import restAPI.models.role.RoleUser;
 import restAPI.repository.UserRepository;
@@ -22,7 +21,7 @@ public class SpringBootApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		// Tạo ra đối tượng person
-		User person = new User(
+		UserInfo person = new UserInfo(
 				"xuanvy98",
 				"xuanvy",
 				"nguyen",

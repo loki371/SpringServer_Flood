@@ -22,7 +22,7 @@ import javax.validation.constraints.Size;
 			@UniqueConstraint(columnNames = "email") 
 		})
 @Getter @Setter @NoArgsConstructor
-public class User {
+public class UserInfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -64,7 +64,7 @@ public class User {
 	@OneToOne(mappedBy = "user", optional = true, cascade = CascadeType.ALL)
 	private RoleRescuer roleRescuer;
 
-	public User(String username, String firstname, String lastname, String phone, String email, String password) {
+	public UserInfo(String username, String firstname, String lastname, String phone, String email, String password) {
 		this.username = username;
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -73,7 +73,7 @@ public class User {
 		this.password = password;
 	}
 
-	public User(String username, String firstname, String lastname, String phone, String email, String password, RoleUser roleUser, RoleRescuer roleRescuer) {
+	public UserInfo(String username, String firstname, String lastname, String phone, String email, String password, RoleUser roleUser, RoleRescuer roleRescuer) {
 		this.username = username;
 		this.firstname = firstname;
 		this.lastname = lastname;

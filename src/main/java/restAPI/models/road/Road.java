@@ -12,7 +12,7 @@ public class Road {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Ward ward;
 
     @OneToMany(mappedBy = "road", cascade = CascadeType.ALL)
