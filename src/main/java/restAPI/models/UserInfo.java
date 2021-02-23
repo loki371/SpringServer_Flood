@@ -3,9 +3,7 @@ package restAPI.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import restAPI.models.role.Role;
-import restAPI.models.role.RoleRescuer;
-import restAPI.models.role.RoleUser;
+import restAPI.models.role.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,9 +22,6 @@ import javax.validation.constraints.Size;
 @Getter @Setter @NoArgsConstructor
 public class UserInfo {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
 	@NotBlank
 	@Size(max = 20)
 	private String username;
@@ -54,15 +49,21 @@ public class UserInfo {
 
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinTable(	name = "user_roles", 
-				joinColumns = @JoinColumn(name = "user_id"), 
+				joinColumns = @JoinColumn(name = "user_username"),
 				inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 
-	@OneToOne(mappedBy = "user", optional = true, cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "userInfo", optional = true, cascade = CascadeType.ALL)
 	private RoleUser roleUser;
 
-	@OneToOne(mappedBy = "user", optional = true, cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "userInfo", optional = true, cascade = CascadeType.ALL)
 	private RoleRescuer roleRescuer;
+
+	@OneToOne(mappedBy = "userInfo", optional = true, cascade = CascadeType.ALL)
+	private RoleVolunteer roleVolunteer;
+
+	@OneToOne(mappedBy = "userInfo", optional = true, cascade = CascadeType.ALL)
+	private RoleAuthority roleAuthority;
 
 	public UserInfo(String username, String firstname, String lastname, String phone, String email, String password) {
 		this.username = username;
@@ -71,20 +72,14 @@ public class UserInfo {
 		this.phone = phone;
 		this.email = email;
 		this.password = password;
-	}
 
-	public UserInfo(String username, String firstname, String lastname, String phone, String email, String password, RoleUser roleUser, RoleRescuer roleRescuer) {
-		this.username = username;
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.phone = phone;
-		this.email = email;
-		this.password = password;
-		this.roleUser = roleUser;
-		this.roleRescuer = roleRescuer;
+		this.roleUser = null;
+		this.roleRescuer = null;
+		this.roleVolunteer = null;
+		this.roleAuthority = null;
 	}
 
 	public void showInfo() {
-		System.out.println(id + " username: " + username + " first-last: " + firstname + "-" + lastname + "; " + phone + "; " + email + "; pass: " + password);
+		System.out.println(" username: " + username + " first-last: " + firstname + "-" + lastname + "; " + phone + "; " + email + "; pass: " + password);
 	}
 }

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import restAPI.models.role.ERole;
 import restAPI.models.role.Role;
 import restAPI.models.UserInfo;
+import restAPI.models.role.RoleUser;
 import restAPI.payload.request.LoginRequest;
 import restAPI.payload.request.SignupRequest;
 import restAPI.payload.response.JwtResponse;
@@ -66,8 +67,7 @@ public class AuthController {
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
 
-		return ResponseEntity.ok(new JwtResponse(jwt, 
-												 userDetails.getId(), 
+		return ResponseEntity.ok(new JwtResponse(jwt,
 												 userDetails.getUsername(), 
 												 userDetails.getEmail(), 
 												 roles));
@@ -95,37 +95,18 @@ public class AuthController {
 							 signUpRequest.getEmail(),
 							 encoder.encode(signUpRequest.getPassword()));
 
-		Set<String> strRoles = signUpRequest.getRole();
+		// add roleUser to roles Set
 		Set<Role> roles = new HashSet<>();
-
-		if (strRoles == null) {
-			Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-			roles.add(userRole);
-		} else {
-			strRoles.forEach(role -> {
-				switch (role) {
-				case "admin":
-					Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-					roles.add(adminRole);
-
-					break;
-				case "res":
-					Role modRole = roleRepository.findByName(ERole.ROLE_RESCUER)
-							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-					roles.add(modRole);
-
-					break;
-				default:
-					Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-					roles.add(userRole);
-				}
-			});
-		}
-
+		Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+				.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+		roles.add(userRole);
 		user.setRoles(roles);
+
+		// add roleUser to attribute
+		RoleUser roleUser = new RoleUser(user);
+		user.setRoleUser(roleUser);
+
+		// save to DB
 		userRepository.save(user);
 
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));

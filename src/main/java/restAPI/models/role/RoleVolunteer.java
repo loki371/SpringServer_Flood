@@ -15,11 +15,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class RoleVolunteer {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
-    @PrimaryKeyJoinColumn
-    private UserInfo user;
+    private UserInfo userInfo;
 
     @ManyToOne
     private Ward ward;

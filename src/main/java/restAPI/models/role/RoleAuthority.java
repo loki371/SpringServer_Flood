@@ -13,10 +13,10 @@ import javax.persistence.*;
 @Setter @Getter @NoArgsConstructor
 public class RoleAuthority {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
-    @PrimaryKeyJoinColumn
     private UserInfo userInfo;
 
     @ManyToOne

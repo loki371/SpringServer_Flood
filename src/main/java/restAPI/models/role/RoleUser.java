@@ -10,6 +10,7 @@ import restAPI.models.location.Ward;
 import restAPI.models.registration.Registration;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,11 +18,11 @@ import java.util.List;
 @Getter @Setter @NoArgsConstructor
 public class RoleUser {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(optional = false)
-    @PrimaryKeyJoinColumn
-    private UserInfo user;
+    private UserInfo userInfo;
 
     @ManyToMany
     @JoinTable( name = "subscriber_registration",
@@ -51,7 +52,11 @@ public class RoleUser {
     )
     private List<Province> favoriteProvince;
 
-    public RoleUser(UserInfo user) {
-        this.user = user;
+    public RoleUser(UserInfo userInfo) {
+        this.userInfo = userInfo;
+        this.registrationList = new ArrayList<>();
+        this.favoriteWards = new ArrayList<>();
+        this.favoriteDistrict = new ArrayList<>();
+        this.favoriteProvince = new ArrayList<>();
     }
 }

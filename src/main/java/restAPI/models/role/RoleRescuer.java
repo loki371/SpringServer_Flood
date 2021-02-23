@@ -14,11 +14,11 @@ import javax.persistence.*;
 @Getter @Setter @NoArgsConstructor
 public class RoleRescuer {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(optional = false)
-    @PrimaryKeyJoinColumn
-    private UserInfo user;
+    private UserInfo userInfo;
 
     @OneToOne
     private Registration inSaving;
@@ -28,7 +28,7 @@ public class RoleRescuer {
     @ManyToOne
     private Ward ward;
 
-    public RoleRescuer(UserInfo user) {
-        this.user = user;
+    public RoleRescuer(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 }
