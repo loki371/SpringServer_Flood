@@ -20,10 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import restAPI.models.role.ERole;
-import restAPI.models.role.Role;
+import restAPI.Constants;
+import restAPI.models.role.*;
 import restAPI.models.UserInfo;
-import restAPI.models.role.RoleUser;
 import restAPI.payload.request.LoginRequest;
 import restAPI.payload.request.SignupRequest;
 import restAPI.payload.response.JwtResponse;
@@ -95,16 +94,50 @@ public class AuthController {
 							 signUpRequest.getEmail(),
 							 encoder.encode(signUpRequest.getPassword()));
 
-		// add roleUser to roles Set
+		// add role
 		Set<Role> roles = new HashSet<>();
-		Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-				.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-		roles.add(userRole);
-		user.setRoles(roles);
+		String roleNotFound = "Error: Role is not found.";
+		signUpRequest.getRole().forEach(
+			item -> {
+				Role roleAuthen = null;
 
-		// add roleUser to attribute
-		RoleUser roleUser = new RoleUser(user);
-		user.setRoleUser(roleUser);
+				if (item.equals(Constants.ROLE_AUTHORITY)) {
+
+					roleAuthen = roleRepository.findByName(ERole.ROLE_AUTHORITY)
+							.orElseThrow(() -> new RuntimeException(roleNotFound));
+
+					RoleAuthority role = new RoleAuthority(user);
+					user.setRoleAuthority(role);
+				}
+				else if (item.equals(Constants.ROLE_USER)) {
+
+					roleAuthen = roleRepository.findByName(ERole.ROLE_USER)
+							.orElseThrow(() -> new RuntimeException(roleNotFound));
+
+					RoleUser role = new RoleUser(user);
+					user.setRoleUser(role);
+				}
+				else if (item.equals(Constants.ROLE_RESCUER)) {
+
+					roleAuthen = roleRepository.findByName(ERole.ROLE_RESCUER)
+							.orElseThrow(() -> new RuntimeException(roleNotFound));
+
+					RoleRescuer role = new RoleRescuer(user);
+					user.setRoleRescuer(role);
+				}
+				else if (item.equals(Constants.ROLE_VOLUNTEER)) {
+
+					roleAuthen = roleRepository.findByName(ERole.ROLE_RESCUER)
+							.orElseThrow(() -> new RuntimeException(roleNotFound));
+
+					RoleVolunteer role = new RoleVolunteer(user);
+					user.setRoleVolunteer(role);
+				}
+
+				roles.add(roleAuthen);
+			}
+		);
+		user.setRoles(roles);
 
 		// save to DB
 		userRepository.save(user);

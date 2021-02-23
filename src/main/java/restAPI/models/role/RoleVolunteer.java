@@ -27,4 +27,11 @@ public class RoleVolunteer {
     private Ward ward;
 
     private Float score;
+
+    public RoleVolunteer(UserInfo userInfo) {
+        this.username = userInfo.getUsername();
+        this.userInfo = userInfo;
+        this.ward = null;
+        this.score = (float) 0;
+    }
 }

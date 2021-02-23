@@ -31,6 +31,9 @@ public class RoleRescuer {
     private Ward ward;
 
     public RoleRescuer(UserInfo userInfo) {
+        this.username = userInfo.getUsername();
         this.userInfo = userInfo;
+        this.score = (float) 0;
+        this.ward = null;
     }
 }

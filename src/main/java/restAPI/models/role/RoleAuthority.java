@@ -26,4 +26,11 @@ public class RoleAuthority {
 
     @ManyToOne
     private UserInfo farther;
+
+    public RoleAuthority(UserInfo userInfo) {
+        this.username = userInfo.getUsername();
+        this.userInfo = userInfo;
+        this.ward = null;
+        this.farther = null;
+    }
 }
