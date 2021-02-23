@@ -7,6 +7,7 @@ import restAPI.models.UserInfo;
 import restAPI.models.location.Ward;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "role_volunteer")
@@ -15,10 +16,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class RoleVolunteer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Size(max = 20)
+    private String username;
 
     @OneToOne
+    @PrimaryKeyJoinColumn
     private UserInfo userInfo;
 
     @ManyToOne

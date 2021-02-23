@@ -47,7 +47,7 @@ public class UserInfo {
 	@Size(max = 120)
 	private String password;
 
-	@OneToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(	name = "user_roles", 
 				joinColumns = @JoinColumn(name = "user_username"),
 				inverseJoinColumns = @JoinColumn(name = "role_id"))

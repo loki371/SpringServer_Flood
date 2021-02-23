@@ -8,16 +8,18 @@ import restAPI.models.location.Ward;
 import restAPI.models.registration.Registration;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "role_rescuer")
 @Getter @Setter @NoArgsConstructor
 public class RoleRescuer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Size(max = 20)
+    private String username;
 
     @OneToOne(optional = false)
+    @PrimaryKeyJoinColumn
     private UserInfo userInfo;
 
     @OneToOne

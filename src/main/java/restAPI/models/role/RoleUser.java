@@ -3,6 +3,7 @@ package restAPI.models.role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.parameters.P;
 import restAPI.models.UserInfo;
 import restAPI.models.location.District;
 import restAPI.models.location.Province;
@@ -10,6 +11,7 @@ import restAPI.models.location.Ward;
 import restAPI.models.registration.Registration;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +20,11 @@ import java.util.List;
 @Getter @Setter @NoArgsConstructor
 public class RoleUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Size(max = 20)
+    private String username;
 
     @OneToOne(optional = false)
+    @PrimaryKeyJoinColumn
     private UserInfo userInfo;
 
     @ManyToMany
@@ -54,6 +57,7 @@ public class RoleUser {
 
     public RoleUser(UserInfo userInfo) {
         this.userInfo = userInfo;
+        this.username = userInfo.getUsername();
         this.registrationList = new ArrayList<>();
         this.favoriteWards = new ArrayList<>();
         this.favoriteDistrict = new ArrayList<>();
