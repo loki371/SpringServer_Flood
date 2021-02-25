@@ -1,5 +1,6 @@
 package restAPI.models.role;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,12 +20,14 @@ public class RoleAuthority {
 
     @OneToOne
     @PrimaryKeyJoinColumn
+    @JsonIgnore
     private UserInfo userInfo;
 
     @ManyToOne
     private Ward ward;
 
     @ManyToOne
+    @JsonIgnore
     private UserInfo farther;
 
     public RoleAuthority(UserInfo userInfo) {

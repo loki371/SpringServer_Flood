@@ -1,8 +1,8 @@
-package restAPI.payload.request;
+package restAPI.payload;
 
 import javax.validation.constraints.NotBlank;
 
-public class LoginRequest {
+public class Login {
 	@NotBlank
 	private String username;
 

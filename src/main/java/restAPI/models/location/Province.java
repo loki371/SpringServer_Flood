@@ -1,5 +1,6 @@
 package restAPI.models.location;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,5 +24,6 @@ public class Province {
     private String type;
 
     @OneToMany(mappedBy = "province")
+    @JsonIgnore
     private List<District> districts;
 }

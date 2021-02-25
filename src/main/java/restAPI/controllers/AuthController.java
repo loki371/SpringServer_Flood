@@ -14,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,17 +22,17 @@ import org.springframework.web.bind.annotation.RestController;
 import restAPI.Constants;
 import restAPI.models.role.*;
 import restAPI.models.UserInfo;
-import restAPI.payload.request.LoginRequest;
-import restAPI.payload.request.SignupRequest;
-import restAPI.payload.response.JwtResponse;
-import restAPI.payload.response.MessageResponse;
+import restAPI.payload.Login;
+import restAPI.payload.Signup;
+import restAPI.payload.Jwt;
+import restAPI.payload.Message;
 import restAPI.repository.role.RoleRepository;
 import restAPI.repository.UserRepository;
 import restAPI.security.jwt.JwtUtils;
 import restAPI.security.services.UserDetailsImpl;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/v1/api/auth")
 public class AuthController {
 	@Autowired
 	AuthenticationManager authenticationManager;
@@ -51,7 +50,7 @@ public class AuthController {
 	JwtUtils jwtUtils;
 
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody Login loginRequest) {
 
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -65,23 +64,23 @@ public class AuthController {
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
 
-		return ResponseEntity.ok(new JwtResponse(jwt,
+		return ResponseEntity.ok(new Jwt(jwt,
 												 userDetails.getUsername(),
 												 roles));
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+	public ResponseEntity<?> registerUser(@Valid @RequestBody Signup signUpRequest) {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse("Error: Username is already taken!"));
+					.body(new Message("Error: Username is already taken!"));
 		}
 
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse("Error: Email is already in use!"));
+					.body(new Message("Error: Email is already in use!"));
 		}
 
 		// Create new user's account
@@ -131,6 +130,10 @@ public class AuthController {
 					RoleVolunteer role = new RoleVolunteer(user);
 					user.setRoleVolunteer(role);
 				}
+				else if (item.equals(Constants.ROLE_ADMIN)) {
+					roleAuthen = roleRepository.findByName(ERole.ROLE_ADMIN)
+							.orElseThrow(() -> new RuntimeException(roleNotFound));
+				}
 
 				roles.add(roleAuthen);
 			}
@@ -140,6 +143,6 @@ public class AuthController {
 		// save to DB
 		userRepository.save(user);
 
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+		return ResponseEntity.ok(new Message("User registered successfully!"));
 	}
 }

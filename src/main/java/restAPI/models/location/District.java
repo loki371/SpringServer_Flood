@@ -1,5 +1,6 @@
 package restAPI.models.location;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,8 +27,10 @@ public class District {
 
     @ManyToOne
     @JoinColumn(name = "province_id")
+    @JsonIgnore
     private Province province;
 
     @OneToMany(mappedBy = "district")
+    @JsonIgnore
     private List<Ward> wards;
 }

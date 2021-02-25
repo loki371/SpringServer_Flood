@@ -1,5 +1,6 @@
 package restAPI.models.location;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import restAPI.models.road.Road;
 
 import javax.persistence.*;
@@ -20,5 +21,6 @@ public class Ward {
 
     @ManyToOne
     @JoinColumn(name = "district_id")
+    @JsonIgnore
     private District district;
 }

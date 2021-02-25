@@ -1,14 +1,14 @@
-package restAPI.payload.response;
+package restAPI.payload;
 
 import java.util.List;
 
-public class JwtResponse {
+public class Jwt {
 	private String token;
 	private String type = "Bearer";
 	private String username;
 	private List<String> roles;
 
-	public JwtResponse(String accessToken, String username, List<String> roles) {
+	public Jwt(String accessToken, String username, List<String> roles) {
 		this.token = accessToken;
 		this.username = username;
 		this.roles = roles;

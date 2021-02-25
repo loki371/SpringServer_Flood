@@ -1,10 +1,10 @@
-package restAPI.payload.request;
+package restAPI.payload;
 
 import java.util.Set;
 
 import javax.validation.constraints.*;
  
-public class SignupRequest {
+public class Signup {
     @NotBlank
     @Size(min = 3, max = 20)
     private String username;

@@ -1,9 +1,9 @@
-package restAPI.payload.response;
+package restAPI.payload;
 
-public class MessageResponse {
+public class Message {
 	private String message;
 
-	public MessageResponse(String message) {
+	public Message(String message) {
 	    this.message = message;
 	  }
 
