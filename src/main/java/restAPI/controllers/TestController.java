@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/test")
 public class TestController {
@@ -16,20 +15,20 @@ public class TestController {
 	}
 	
 	@GetMapping("/user")
-	@PreAuthorize("@appAuthorizer.authorize(authentication, 'ROLE_USER', this)")
+	@PreAuthorize("hasRole('USER')")
 	public String userAccess() {
 		return "User Content.";
 	}
 
-	@GetMapping("/mod")
-	@PreAuthorize("@appAuthorizer.authorize(authentication, 'ROLE_MODERATOR', this)")
+	@GetMapping("/volunteer")
+	@PreAuthorize("hasRole('VOLUNTEER')")
 	public String moderatorAccess() {
-		return "Moderator Board.";
+		return "Volunteer Board.";
 	}
 
-	@GetMapping("/admin")
-	@PreAuthorize("@appAuthorizer.authorize(authentication, 'ROLE_ADMIN', this)")
+	@GetMapping("/rescuer")
+	@PreAuthorize("hasRole('RESCUER')")
 	public String adminAccess() {
-		return "Admin Board.";
+		return "Rescuer Board.";
 	}
 }

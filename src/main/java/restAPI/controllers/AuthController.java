@@ -32,7 +32,6 @@ import restAPI.repository.UserRepository;
 import restAPI.security.jwt.JwtUtils;
 import restAPI.security.services.UserDetailsImpl;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -67,8 +66,7 @@ public class AuthController {
 				.collect(Collectors.toList());
 
 		return ResponseEntity.ok(new JwtResponse(jwt,
-												 userDetails.getUsername(), 
-												 userDetails.getEmail(), 
+												 userDetails.getUsername(),
 												 roles));
 	}
 
@@ -127,7 +125,7 @@ public class AuthController {
 				}
 				else if (item.equals(Constants.ROLE_VOLUNTEER)) {
 
-					roleAuthen = roleRepository.findByName(ERole.ROLE_RESCUER)
+					roleAuthen = roleRepository.findByName(ERole.ROLE_VOLUNTEER)
 							.orElseThrow(() -> new RuntimeException(roleNotFound));
 
 					RoleVolunteer role = new RoleVolunteer(user);

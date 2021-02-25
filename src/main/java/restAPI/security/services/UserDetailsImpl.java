@@ -17,17 +17,17 @@ public class UserDetailsImpl implements UserDetails {
 
 	private String username;
 
-	private String email;
-
 	@JsonIgnore
 	private String password;
 
+	private UserInfo userInfo;
+
 	private Collection<? extends GrantedAuthority> authorities;
 
-	public UserDetailsImpl(String username, String email, String password,
+	public UserDetailsImpl(UserInfo userInfo, String username, String password,
 			Collection<? extends GrantedAuthority> authorities) {
+		this.userInfo = userInfo;
 		this.username = username;
-		this.email = email;
 		this.password = password;
 		this.authorities = authorities;
 	}
@@ -38,19 +38,15 @@ public class UserDetailsImpl implements UserDetails {
 				.collect(Collectors.toList());
 
 		return new UserDetailsImpl(
-				user.getUsername(), 
-				user.getEmail(),
-				user.getPassword(), 
+				user,
+				user.getUsername(),
+				user.getPassword(),
 				authorities);
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return authorities;
-	}
-
-	public String getEmail() {
-		return email;
 	}
 
 	@Override
