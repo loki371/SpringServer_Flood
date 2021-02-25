@@ -84,4 +84,17 @@ public class AccountController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @DeleteMapping("/{username}")
+    @PreAuthorize("(#username == authentication.getName()) or hasRole('ADMIN')")
+    public ResponseEntity<?> deleteAccount(@PathVariable("username") String username) {
+        Optional<UserInfo> userInfo = userRepository.findByUsername(username);
+
+        if (!userInfo.isPresent())
+            return new ResponseEntity<>(new MessagePayload("Not found username = " + username), HttpStatus.NOT_FOUND);
+
+        userRepository.delete(userInfo.get());
+
+        return new ResponseEntity<>(new MessagePayload("Delete " + username + " successfully"), HttpStatus.OK);
+    }
 }
