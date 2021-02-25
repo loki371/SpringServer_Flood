@@ -8,10 +8,10 @@ import java.util.List;
 
 @Getter
 @Setter
-public class UserInfoList {
+public class UserInfoListPayload {
     private List<UserInfo> userInfoList;
 
-    public UserInfoList(List<UserInfo> userInfoList) {
+    public UserInfoListPayload(List<UserInfo> userInfoList) {
         this.userInfoList = userInfoList;
     }
 }

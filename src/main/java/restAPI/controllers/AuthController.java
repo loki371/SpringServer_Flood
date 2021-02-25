@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 import restAPI.Constants;
 import restAPI.models.role.*;
 import restAPI.models.UserInfo;
-import restAPI.payload.Login;
-import restAPI.payload.Signup;
-import restAPI.payload.Jwt;
-import restAPI.payload.Message;
+import restAPI.payload.LoginPayload;
+import restAPI.payload.SignupPayload;
+import restAPI.payload.JwtPayload;
+import restAPI.payload.MessagePayload;
 import restAPI.repository.role.RoleRepository;
 import restAPI.repository.UserRepository;
 import restAPI.security.jwt.JwtUtils;
@@ -50,7 +50,7 @@ public class AuthController {
 	JwtUtils jwtUtils;
 
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody Login loginRequest) {
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginPayload loginRequest) {
 
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -64,23 +64,23 @@ public class AuthController {
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
 
-		return ResponseEntity.ok(new Jwt(jwt,
+		return ResponseEntity.ok(new JwtPayload(jwt,
 												 userDetails.getUsername(),
 												 roles));
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody Signup signUpRequest) {
+	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupPayload signUpRequest) {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity
 					.badRequest()
-					.body(new Message("Error: Username is already taken!"));
+					.body(new MessagePayload("Error: Username is already taken!"));
 		}
 
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
 			return ResponseEntity
 					.badRequest()
-					.body(new Message("Error: Email is already in use!"));
+					.body(new MessagePayload("Error: Email is already in use!"));
 		}
 
 		// Create new user's account
@@ -143,6 +143,6 @@ public class AuthController {
 		// save to DB
 		userRepository.save(user);
 
-		return ResponseEntity.ok(new Message("User registered successfully!"));
+		return ResponseEntity.ok(new MessagePayload("User registered successfully!"));
 	}
 }

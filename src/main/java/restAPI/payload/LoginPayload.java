@@ -2,7 +2,7 @@ package restAPI.payload;
 
 import javax.validation.constraints.NotBlank;
 
-public class Login {
+public class LoginPayload {
 	@NotBlank
 	private String username;
 
