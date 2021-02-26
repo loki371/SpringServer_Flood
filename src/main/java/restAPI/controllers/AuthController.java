@@ -26,7 +26,7 @@ import restAPI.payload.LoginPayload;
 import restAPI.payload.SignupPayload;
 import restAPI.payload.JwtPayload;
 import restAPI.payload.MessagePayload;
-import restAPI.repository.role.RoleRepository;
+import restAPI.repository.role.*;
 import restAPI.repository.UserRepository;
 import restAPI.security.jwt.JwtUtils;
 import restAPI.security.services.UserDetailsImpl;
@@ -48,6 +48,18 @@ public class AuthController {
 
 	@Autowired
 	JwtUtils jwtUtils;
+
+	@Autowired
+	RoleUserRepository roleUserRepository;
+
+	@Autowired
+	RoleAuthorityRepository roleAuthorityRepository;
+
+	@Autowired
+	RoleVolunteerRepository roleVolunteerRepository;
+
+	@Autowired
+	RoleRescuerRepository roleRescuerRepository;
 
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginPayload loginRequest) {
@@ -91,6 +103,8 @@ public class AuthController {
 							 signUpRequest.getEmail(),
 							 encoder.encode(signUpRequest.getPassword()));
 
+		userRepository.save(user);
+
 		// add role
 		Set<Role> roles = new HashSet<>();
 		String roleNotFound = "Error: Role is not found.";
@@ -104,7 +118,7 @@ public class AuthController {
 							.orElseThrow(() -> new RuntimeException(roleNotFound));
 
 					RoleAuthority role = new RoleAuthority(user);
-					user.setRoleAuthority(role);
+					roleAuthorityRepository.save(role);
 				}
 				else if (item.equals(Constants.ROLE_USER)) {
 
@@ -112,7 +126,7 @@ public class AuthController {
 							.orElseThrow(() -> new RuntimeException(roleNotFound));
 
 					RoleUser role = new RoleUser(user);
-					user.setRoleUser(role);
+					roleUserRepository.save(role);
 				}
 				else if (item.equals(Constants.ROLE_RESCUER)) {
 
@@ -120,7 +134,7 @@ public class AuthController {
 							.orElseThrow(() -> new RuntimeException(roleNotFound));
 
 					RoleRescuer role = new RoleRescuer(user);
-					user.setRoleRescuer(role);
+					roleRescuerRepository.save(role);
 				}
 				else if (item.equals(Constants.ROLE_VOLUNTEER)) {
 
@@ -128,7 +142,7 @@ public class AuthController {
 							.orElseThrow(() -> new RuntimeException(roleNotFound));
 
 					RoleVolunteer role = new RoleVolunteer(user);
-					user.setRoleVolunteer(role);
+					roleVolunteerRepository.save(role);
 				}
 				else if (item.equals(Constants.ROLE_ADMIN)) {
 					roleAuthen = roleRepository.findByName(ERole.ROLE_ADMIN)

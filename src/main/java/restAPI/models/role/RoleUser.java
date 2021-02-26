@@ -26,7 +26,6 @@ public class RoleUser {
 
     @OneToOne(optional = false)
     @PrimaryKeyJoinColumn
-    @JsonIgnore
     private UserInfo userInfo;
 
     @ManyToMany

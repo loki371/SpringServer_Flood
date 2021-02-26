@@ -49,23 +49,27 @@ public class UserInfo {
 	@JsonIgnore
 	private String password;
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(	name = "user_roles", 
 				joinColumns = @JoinColumn(name = "user_username"),
 				inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 
-	@OneToOne(mappedBy = "userInfo", optional = true, cascade = CascadeType.ALL)
-	private RoleUser roleUser;
-
-	@OneToOne(mappedBy = "userInfo", optional = true, cascade = CascadeType.ALL)
-	private RoleRescuer roleRescuer;
-
-	@OneToOne(mappedBy = "userInfo", optional = true, cascade = CascadeType.ALL)
-	private RoleVolunteer roleVolunteer;
-
-	@OneToOne(mappedBy = "userInfo", optional = true, cascade = CascadeType.ALL)
-	private RoleAuthority roleAuthority;
+//	@OneToOne(mappedBy = "userInfo", optional = true, cascade = CascadeType.ALL)
+////	@JsonIgnore
+//	private RoleUser roleUser;
+//
+//	@OneToOne(mappedBy = "userInfo", optional = true, cascade = CascadeType.ALL)
+////	@JsonIgnore
+//	private RoleRescuer roleRescuer;
+//
+//	@OneToOne(mappedBy = "userInfo", optional = true, cascade = CascadeType.ALL)
+////	@JsonIgnore
+//	private RoleVolunteer roleVolunteer;
+//
+//	@OneToOne(mappedBy = "userInfo", optional = true, cascade = CascadeType.ALL)
+////	@JsonIgnore
+//	private RoleAuthority roleAuthority;
 
 	public UserInfo(String username, String firstname, String lastname, String phone, String email, String password) {
 		this.username = username;
@@ -75,10 +79,10 @@ public class UserInfo {
 		this.email = email;
 		this.password = password;
 
-		this.roleUser = null;
-		this.roleRescuer = null;
-		this.roleVolunteer = null;
-		this.roleAuthority = null;
+//		this.roleUser = null;
+//		this.roleRescuer = null;
+//		this.roleVolunteer = null;
+//		this.roleAuthority = null;
 	}
 
 	public void showInfo() {

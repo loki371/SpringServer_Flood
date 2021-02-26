@@ -20,13 +20,10 @@ public class UserDetailsImpl implements UserDetails {
 	@JsonIgnore
 	private String password;
 
-	private UserInfo userInfo;
-
 	private Collection<? extends GrantedAuthority> authorities;
 
-	public UserDetailsImpl(UserInfo userInfo, String username, String password,
+	public UserDetailsImpl(String username, String password,
 			Collection<? extends GrantedAuthority> authorities) {
-		this.userInfo = userInfo;
 		this.username = username;
 		this.password = password;
 		this.authorities = authorities;
@@ -38,7 +35,6 @@ public class UserDetailsImpl implements UserDetails {
 				.collect(Collectors.toList());
 
 		return new UserDetailsImpl(
-				user,
 				user.getUsername(),
 				user.getPassword(),
 				authorities);
