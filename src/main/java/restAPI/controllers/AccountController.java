@@ -68,7 +68,6 @@ public class AccountController {
                 .orElseGet(
                     () -> new ResponseEntity<>(new SimplePayload("Not found username = " + username), HttpStatus.NOT_FOUND)
                 );
-
     }
 
     @PutMapping("/{username}")

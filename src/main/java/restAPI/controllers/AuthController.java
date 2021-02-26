@@ -30,6 +30,7 @@ import restAPI.repository.role.*;
 import restAPI.repository.UserRepository;
 import restAPI.security.jwt.JwtUtils;
 import restAPI.security.services.UserDetailsImpl;
+import restAPI.services.RoleUtils;
 
 @RestController
 @RequestMapping("/v1/api/auth")
@@ -41,7 +42,7 @@ public class AuthController {
 	UserRepository userRepository;
 
 	@Autowired
-	RoleRepository roleRepository;
+	RoleUtils roleUtils;
 
 	@Autowired
 	PasswordEncoder encoder;
@@ -107,46 +108,40 @@ public class AuthController {
 
 		// add role
 		Set<Role> roles = new HashSet<>();
-		String roleNotFound = "Error: Role is not found.";
 		signUpRequest.getRole().forEach(
 			item -> {
 				Role roleAuthen = null;
 
 				if (item.equals(Constants.ROLE_AUTHORITY)) {
 
-					roleAuthen = roleRepository.findByName(ERole.ROLE_AUTHORITY)
-							.orElseThrow(() -> new RuntimeException(roleNotFound));
+					roleAuthen = roleUtils.getRoleByERole(ERole.ROLE_AUTHORITY);
 
 					RoleAuthority role = new RoleAuthority(user);
 					roleAuthorityRepository.save(role);
 				}
 				else if (item.equals(Constants.ROLE_USER)) {
 
-					roleAuthen = roleRepository.findByName(ERole.ROLE_USER)
-							.orElseThrow(() -> new RuntimeException(roleNotFound));
+					roleAuthen = roleUtils.getRoleByERole(ERole.ROLE_USER);
 
 					RoleUser role = new RoleUser(user);
 					roleUserRepository.save(role);
 				}
 				else if (item.equals(Constants.ROLE_RESCUER)) {
 
-					roleAuthen = roleRepository.findByName(ERole.ROLE_RESCUER)
-							.orElseThrow(() -> new RuntimeException(roleNotFound));
+					roleAuthen = roleUtils.getRoleByERole(ERole.ROLE_RESCUER);
 
 					RoleRescuer role = new RoleRescuer(user);
 					roleRescuerRepository.save(role);
 				}
 				else if (item.equals(Constants.ROLE_VOLUNTEER)) {
 
-					roleAuthen = roleRepository.findByName(ERole.ROLE_VOLUNTEER)
-							.orElseThrow(() -> new RuntimeException(roleNotFound));
+					roleAuthen = roleUtils.getRoleByERole(ERole.ROLE_VOLUNTEER);
 
 					RoleVolunteer role = new RoleVolunteer(user);
 					roleVolunteerRepository.save(role);
 				}
 				else if (item.equals(Constants.ROLE_ADMIN)) {
-					roleAuthen = roleRepository.findByName(ERole.ROLE_ADMIN)
-							.orElseThrow(() -> new RuntimeException(roleNotFound));
+					roleAuthen = roleUtils.getRoleByERole(ERole.ROLE_ADMIN);
 				}
 
 				roles.add(roleAuthen);

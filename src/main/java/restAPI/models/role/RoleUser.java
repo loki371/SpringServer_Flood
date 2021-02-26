@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.parameters.P;
 import restAPI.models.UserInfo;
 import restAPI.models.location.District;
 import restAPI.models.location.Province;
@@ -26,6 +25,7 @@ public class RoleUser {
 
     @OneToOne(optional = false)
     @PrimaryKeyJoinColumn
+    @JsonIgnore
     private UserInfo userInfo;
 
     @ManyToMany
