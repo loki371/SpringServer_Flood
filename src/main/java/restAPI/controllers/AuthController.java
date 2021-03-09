@@ -30,7 +30,7 @@ import restAPI.repository.role.*;
 import restAPI.repository.UserRepository;
 import restAPI.security.jwt.JwtUtils;
 import restAPI.security.services.UserDetailsImpl;
-import restAPI.services.RoleUtils;
+import restAPI.services.RoleService;
 
 @RestController
 @RequestMapping("/v1/api/auth")
@@ -42,7 +42,7 @@ public class AuthController {
 	UserRepository userRepository;
 
 	@Autowired
-	RoleUtils roleUtils;
+	RoleService roleUtils;
 
 	@Autowired
 	PasswordEncoder encoder;

@@ -7,7 +7,7 @@ import restAPI.models.role.Role;
 import restAPI.repository.role.RoleRepository;
 
 @Service
-public class RoleUtils {
+public class RoleService {
     @Autowired
     RoleRepository roleRepository;
 

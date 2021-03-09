@@ -1,6 +1,5 @@
 package restAPI.services;
 
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restAPI.models.UserInfo;
@@ -8,21 +7,18 @@ import restAPI.models.role.ERole;
 import restAPI.models.role.Role;
 import restAPI.models.role.RoleUser;
 import restAPI.repository.UserRepository;
-import restAPI.repository.role.RoleRepository;
-import restAPI.repository.role.RoleUserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class UserInfoUtils {
+public class UserInfoService {
     @Autowired
     UserRepository userInfoRepository;
 
     @Autowired
-    RoleUtils roleUtils;
+    RoleService roleService;
 
     static final String UserInfo_NotFound = "UserInfo not found!";
 
@@ -35,7 +31,7 @@ public class UserInfoUtils {
     public void removeRoleFromUserInfo(String username, ERole eRole) {
         UserInfo userInfo = this.getUserInfoByUsername(username);
 
-        Role roleOfUserInfo = roleUtils.getRoleByERole(eRole);
+        Role roleOfUserInfo = roleService.getRoleByERole(eRole);
 
         userInfo.getRoles().removeIf(
                 role -> (role.getName().equals(roleOfUserInfo.getName()))
@@ -45,7 +41,7 @@ public class UserInfoUtils {
     public List<String> removeRoleFromAllUserInfo(ERole eRole) {
         List<UserInfo> userInfoList = userInfoRepository.findAllRoleUser();
 
-        Role roleOfUserInfo = roleUtils.getRoleByERole(eRole);
+        Role roleOfUserInfo = roleService.getRoleByERole(eRole);
 
         ArrayList<String> roleUserNames = new ArrayList<>();
 
@@ -72,7 +68,7 @@ public class UserInfoUtils {
 
         Set<Role> roleOfUserInfo = userInfo.getRoles();
 
-        roleOfUserInfo.add(roleUtils.getRoleByERole(eRole));;
+        roleOfUserInfo.add(roleService.getRoleByERole(eRole));;
 
         userInfo.setRoles(roleOfUserInfo);
 

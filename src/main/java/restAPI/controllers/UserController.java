@@ -7,21 +7,17 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import restAPI.models.role.ERole;
 import restAPI.models.role.RoleUser;
-import restAPI.payload.SignupPayload;
 import restAPI.payload.SimplePayload;
 import restAPI.repository.UserRepository;
 import restAPI.repository.role.RoleUserRepository;
-import restAPI.services.UserInfoUtils;
+import restAPI.services.UserInfoService;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/api/users")
-@Transactional
 public class UserController {
     @Autowired
     UserRepository userRepository;
@@ -30,7 +26,7 @@ public class UserController {
     RoleUserRepository roleUserRepository;
 
     @Autowired
-    UserInfoUtils userInfoUtils;
+    UserInfoService userInfoUtils;
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -86,6 +82,7 @@ public class UserController {
 
     @DeleteMapping("/{username}")
     @PreAuthorize("(#username == authentication.getName()) or hasRole('ADMIN')")
+    @Transactional
     public ResponseEntity<?> deleteUser(@PathVariable("username") String username) {
         if (!userRepository.existsByUsername(username))
             return new ResponseEntity<>(new SimplePayload("User " + username + " is not found"), HttpStatus.BAD_REQUEST);
