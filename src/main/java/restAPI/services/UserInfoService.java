@@ -3,9 +3,7 @@ package restAPI.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restAPI.models.UserInfo;
-import restAPI.models.role.ERole;
-import restAPI.models.role.Role;
-import restAPI.models.role.RoleUser;
+import restAPI.models.role.*;
 import restAPI.repository.UserRepository;
 
 import java.util.ArrayList;
@@ -64,14 +62,28 @@ public class UserInfoService {
     public Object addNewRoleToUserInfo(String username, ERole eRole) {
         UserInfo userInfo = this.getUserInfoByUsername(username);
 
-        RoleUser roleUser = new RoleUser(userInfo);
+        Object role = null;
 
+        switch (eRole) {
+            case ROLE_USER:
+                role = new RoleUser(userInfo);
+                break;
+            case ROLE_RESCUER:
+                role = new RoleRescuer(userInfo);
+                break;
+            case ROLE_VOLUNTEER:
+                role = new RoleVolunteer(userInfo);
+                break;
+            case ROLE_AUTHORITY:
+                role = new RoleAuthority(userInfo);
+                break;
+        }
         Set<Role> roleOfUserInfo = userInfo.getRoles();
 
         roleOfUserInfo.add(roleService.getRoleByERole(eRole));;
 
         userInfo.setRoles(roleOfUserInfo);
 
-        return roleUser;
+        return role;
     }
 }
