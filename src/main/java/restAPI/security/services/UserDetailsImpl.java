@@ -22,11 +22,15 @@ public class UserDetailsImpl implements UserDetails {
 
 	private Collection<? extends GrantedAuthority> authorities;
 
+	private UserInfo userInfo;
+
 	public UserDetailsImpl(String username, String password,
-			Collection<? extends GrantedAuthority> authorities) {
+			Collection<? extends GrantedAuthority> authorities,
+						   UserInfo userInfo) {
 		this.username = username;
 		this.password = password;
 		this.authorities = authorities;
+		this.userInfo = userInfo;
 	}
 
 	public static UserDetailsImpl build(UserInfo user) {
@@ -37,7 +41,8 @@ public class UserDetailsImpl implements UserDetails {
 		return new UserDetailsImpl(
 				user.getUsername(),
 				user.getPassword(),
-				authorities);
+				authorities,
+				user);
 	}
 
 	@Override
@@ -84,4 +89,6 @@ public class UserDetailsImpl implements UserDetails {
 		UserDetailsImpl user = (UserDetailsImpl) o;
 		return Objects.equals(username, user.username);
 	}
+
+	public UserInfo getUserInfo() { return this.userInfo; }
 }

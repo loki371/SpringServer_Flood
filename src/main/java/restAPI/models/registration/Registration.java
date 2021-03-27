@@ -32,8 +32,7 @@ public class Registration {
 
     private int numPerson;
 
-    @ManyToOne
-    private State state;
+    private EState eState;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private UserInfo savedBy;

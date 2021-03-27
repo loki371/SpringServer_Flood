@@ -1,6 +1,8 @@
 package restAPI.models.location;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
 import restAPI.models.road.Road;
 
 import javax.persistence.*;
@@ -8,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "wards")
+@Getter @Setter
 public class Ward {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

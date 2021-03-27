@@ -34,6 +34,7 @@ public class UserInfoService {
         userInfo.getRoles().removeIf(
                 role -> (role.getName().equals(roleOfUserInfo.getName()))
         );
+        userInfoRepository.save(userInfo);
     }
 
     public List<String> removeRoleFromAllUserInfo(ERole eRole) {
