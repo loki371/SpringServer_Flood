@@ -7,6 +7,7 @@ import restAPI.models.UserInfo;
 import restAPI.models.location.Ward;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -34,12 +35,12 @@ public class Registration {
 
     private EState eState;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private UserInfo savedBy;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private UserInfo createBy;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany
     private List<Comment> commentList;
 }

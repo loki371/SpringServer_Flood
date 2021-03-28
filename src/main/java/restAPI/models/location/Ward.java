@@ -13,7 +13,7 @@ import java.util.List;
 @Getter @Setter
 public class Ward {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "CHAR(6)")
     private String id;
 
     @Column(columnDefinition="VARCHAR(45)")

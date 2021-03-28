@@ -6,5 +6,5 @@ import restAPI.models.location.Ward;
 
 @Repository
 public interface WardRepository extends JpaRepository<Ward, String> {
-    public boolean existsById(String id);
+    boolean existsById(String id);
 }

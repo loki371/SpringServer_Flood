@@ -16,7 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 public class District {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @Column(columnDefinition="VARCHAR(45)")

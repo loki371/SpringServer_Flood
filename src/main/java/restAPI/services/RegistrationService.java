@@ -8,8 +8,10 @@ import restAPI.models.registration.Comment;
 import restAPI.models.registration.EState;
 import restAPI.models.registration.Registration;
 import restAPI.payload.RegistrationPayload;
+import restAPI.repository.registration.RegistrationRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RegistrationService {
@@ -18,6 +20,9 @@ public class RegistrationService {
 
     @Autowired
     StateService stateService;
+
+    @Autowired
+    RegistrationRepository registrationRepository;
 
     public boolean checkValidRegistrationRequest(RegistrationPayload payload) {
         if (payload.getName() == null)
@@ -61,11 +66,17 @@ public class RegistrationService {
 
         Ward ward = wardService.getWardByWardId(request.getWardId());
         registration.setWard(ward);
-
-        System.out.println("ward = " + ward);
+        System.out.println("ward = " + ward.getName() + " id = " + ward.getId());
 
         registration.setPhone(request.getPhone());
         registration.setSavedBy(null);
+
+        registrationRepository.save(registration);
+
         return registration;
+    }
+
+    public List<Registration> getAllRegistrations() {
+        return registrationRepository.findAll();
     }
 }

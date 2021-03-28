@@ -3,16 +3,15 @@ package restAPI.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import restAPI.models.UserInfo;
 import restAPI.models.registration.Registration;
 import restAPI.payload.RegistrationPayload;
 import restAPI.payload.SimplePayload;
 import restAPI.security.services.UserDetailsImpl;
 import restAPI.services.RegistrationService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/api/registrations")
@@ -32,5 +31,11 @@ public class RegistrationController {
         Registration registration = registrationService.createNewRegistration(request, userInfo);
 
         return ResponseEntity.ok().body(new SimplePayload(registration));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllRegistrations() {
+        List<Registration> registrationList = registrationService.getAllRegistrations();
+        return ResponseEntity.ok().body(new SimplePayload(registrationList));
     }
 }

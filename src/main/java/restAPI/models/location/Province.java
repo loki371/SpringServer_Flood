@@ -14,7 +14,6 @@ import java.util.List;
 @Getter @Setter @NoArgsConstructor
 public class Province {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @Column(columnDefinition="VARCHAR(45)")
