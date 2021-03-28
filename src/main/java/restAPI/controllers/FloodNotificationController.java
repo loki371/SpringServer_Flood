@@ -28,7 +28,7 @@ public class FloodNotificationController {
 
         boolean result = floodNotificationService.checkThenAddWardIdToFlood(wardId);
         if (!result)
-            return ResponseEntity.badRequest().body(new SimplePayload("object created!", wardId));
+            return ResponseEntity.badRequest().body(new SimplePayload("object has been in FloodLocationList!", wardId));
 
         return ResponseEntity.ok().body(new SimplePayload("ok", wardId));
     }
@@ -37,5 +37,18 @@ public class FloodNotificationController {
     public ResponseEntity<?> getAllFloodLocation() {
         List<String> wardIds = floodNotificationService.getListWardInFlood();
         return ResponseEntity.ok().body(new SimplePayload(wardIds));
+    }
+
+    @DeleteMapping("/{wardId}")
+    @PreAuthorize("hasRole('AUTHORITY')")
+    public ResponseEntity<?> deleteLocationInFloodNotification(@PathVariable String wardId) {
+        if (!wardService.existWardId(wardId))
+            return ResponseEntity.notFound().build();
+
+        boolean result = floodNotificationService.checkThenRemoveWardIdToFlood(wardId);
+        if (!result)
+            return ResponseEntity.badRequest().body(new SimplePayload("object is not in FloodLocationList!", wardId));
+
+        return ResponseEntity.ok().body(new SimplePayload("ok", wardId));
     }
 }

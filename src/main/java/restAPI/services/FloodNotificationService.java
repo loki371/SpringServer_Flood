@@ -42,4 +42,18 @@ public class FloodNotificationService {
 
         return result;
     }
+
+    public boolean checkThenRemoveWardIdToFlood(String wardId) {
+        synchronized (addWardIdLock) {
+            if (floodLocationRepository.existsByWardId(wardId)) {
+                floodLocationRepository.deleteById(wardId);
+
+                return true;
+
+            } else {
+
+                return false;
+            }
+        }
+    }
 }
