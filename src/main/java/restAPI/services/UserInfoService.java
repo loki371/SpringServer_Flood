@@ -87,4 +87,12 @@ public class UserInfoService {
 
         return role;
     }
+
+    public boolean hasERoleInUserInfo(UserInfo userInfo, ERole eRole) {
+        for (Role userRole : userInfo.getRoles()) {
+            if (userRole.getName() == eRole)
+                return true;
+        }
+        return false;
+    }
 }
