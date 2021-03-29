@@ -1,17 +1,16 @@
 package restAPI.controllers;
 
-import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import restAPI.Constants;
-import restAPI.models.locationRegistration.AuthorityLocationRegistration;
 import restAPI.models.role.ERole;
 import restAPI.payload.SimplePayload;
+import restAPI.repository.location.DistrictRepository;
 import restAPI.repository.location.ProvinceRepository;
+import restAPI.repository.location.WardRepository;
 import restAPI.security.services.UserDetailsImpl;
 import restAPI.services.LocationRegistrationService;
 import restAPI.services.UserInfoService;
@@ -29,11 +28,17 @@ public class LocationRegistrationController {
     ProvinceRepository provinceRepository;
 
     @Autowired
+    DistrictRepository districtRepository;
+
+    @Autowired
+    WardRepository wardRepository;
+
+    @Autowired
     LocationRegistrationService locationRegistrationService;
 
     @PostMapping("/provinces/{provinceId}")
     @PreAuthorize("hasRole('AUTHORITY') or hasRole('VOLUNTEER') or hasRole('RESCUER')")
-    public ResponseEntity<?> createNewLocationRegistration(
+    public ResponseEntity<?> createNewProvinceRegistration(
             @PathVariable String provinceId,
             @RequestParam("eRole") ERole eRole,
             Authentication authentication
@@ -60,6 +65,63 @@ public class LocationRegistrationController {
         return ResponseEntity.ok().body(new SimplePayload("created!"));
     }
 
+    @PostMapping("/districts/{districtId}")
+    @PreAuthorize("hasRole('AUTHORITY') or hasRole('VOLUNTEER') or hasRole('RESCUER')")
+    public ResponseEntity<?> createNewDistrictRegistration(
+            @PathVariable String districtId,
+            @RequestParam("eRole") ERole eRole,
+            Authentication authentication
+    ) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        if (!districtRepository.existsById(districtId))
+            return ResponseEntity.notFound().build();
+
+        if (!userInfoService.hasERoleInUserInfo(userDetails.getUserInfo(), eRole))
+            return ResponseEntity.badRequest().body(new SimplePayload("this user do not has role " + eRole.name()));
+
+        boolean result = locationRegistrationService.addRegistrationToLocation(
+                userDetails.getUsername(),
+                districtId,
+                Constants.DISTRICT_TYPE,
+                eRole);
+
+        if (!result)
+            return ResponseEntity.badRequest().body(
+                    new SimplePayload("you had another request in queue," +
+                            "please delete it before create new one!"));
+
+        return ResponseEntity.ok().body(new SimplePayload("created!"));
+    }
+
+    @PostMapping("/wards/{wardId}")
+    @PreAuthorize("hasRole('AUTHORITY') or hasRole('VOLUNTEER') or hasRole('RESCUER')")
+    public ResponseEntity<?> createNewWardRegistration(
+            @PathVariable String wardId,
+            @RequestParam("eRole") ERole eRole,
+            Authentication authentication
+    ) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        if (!wardRepository.existsById(wardId))
+            return ResponseEntity.notFound().build();
+
+        if (!userInfoService.hasERoleInUserInfo(userDetails.getUserInfo(), eRole))
+            return ResponseEntity.badRequest().body(new SimplePayload("this user do not has role " + eRole.name()));
+
+        boolean result = locationRegistrationService.addRegistrationToLocation(
+                userDetails.getUsername(),
+                wardId,
+                Constants.WARD_TYPE,
+                eRole);
+
+        if (!result)
+            return ResponseEntity.badRequest().body(
+                    new SimplePayload("you had another request in queue," +
+                            "please delete it before create new one!"));
+
+        return ResponseEntity.ok().body(new SimplePayload("created!"));
+    }
 
     @GetMapping("/authorities")
     @PreAuthorize("hasRole('AUTHORITY')")
