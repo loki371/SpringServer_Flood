@@ -12,7 +12,7 @@
 	<groupId>xuanvy99pro</groupId>
 	<artifactId>Flood</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-boot-security-jwt</name>
+	<name>FloodServer</name>
 	<description>FloodServerApp</description>
 
 	<properties>

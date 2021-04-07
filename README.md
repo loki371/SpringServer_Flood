@@ -104,4 +104,6 @@ INSERT INTO roles(name) VALUES('ROLE_MODERATOR');
 INSERT INTO roles(name) VALUES('ROLE_ADMIN');
 ```
 
+For ubuntu
+sudo apt install default-jdk
 iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
