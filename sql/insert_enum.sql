@@ -7,5 +7,3 @@ insert into roles values (1, 'ROLE_USER'),
 insert into comment_types values (1, 'SAFE'),
                                  (2, 'WARNING'),
                                  (3, 'DANGER');
-
-insert into roles values (5, 'ROLE_ADMIN');
