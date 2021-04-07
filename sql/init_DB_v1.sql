@@ -28,7 +28,7 @@ CREATE TABLE `authority_location_registration` (
   `location_id` char(6) DEFAULT NULL,
   `location_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,7 +51,7 @@ CREATE TABLE `comment_types` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `e_comment_type` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,7 +80,7 @@ CREATE TABLE `comments` (
   KEY `FKilx7llae0o5a1ph5vwqkmicej` (`type_id`),
   CONSTRAINT `FKcroelhj11ae6sgle7mug0l9m9` FOREIGN KEY (`registration_id`) REFERENCES `registrations` (`id`),
   CONSTRAINT `FKilx7llae0o5a1ph5vwqkmicej` FOREIGN KEY (`type_id`) REFERENCES `comment_types` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +107,7 @@ CREATE TABLE `districts` (
   PRIMARY KEY (`id`),
   KEY `FK82doq1t64jhly7a546lpvnu2c` (`province_id`),
   CONSTRAINT `FK82doq1t64jhly7a546lpvnu2c` FOREIGN KEY (`province_id`) REFERENCES `provinces` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -133,7 +133,7 @@ CREATE TABLE `favorite_district` (
   KEY `FKcff8d1cxn31oacuj65csl1ck0` (`user_id`),
   CONSTRAINT `FKcff8d1cxn31oacuj65csl1ck0` FOREIGN KEY (`user_id`) REFERENCES `role_user` (`username`),
   CONSTRAINT `FKkxfvl1pu5tbnw1yfc0idug47s` FOREIGN KEY (`district_id`) REFERENCES `districts` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -159,7 +159,7 @@ CREATE TABLE `favorite_province` (
   KEY `FKrcfxeucjcqo5i1uc01k0qol5j` (`user_id`),
   CONSTRAINT `FKbrspacl7xkaa7gflqphggsl54` FOREIGN KEY (`province_id`) REFERENCES `provinces` (`id`),
   CONSTRAINT `FKrcfxeucjcqo5i1uc01k0qol5j` FOREIGN KEY (`user_id`) REFERENCES `role_user` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,7 +185,7 @@ CREATE TABLE `favorite_ward` (
   KEY `FKdr40x3lewqskxaajs871vblkq` (`user_id`),
   CONSTRAINT `FKdr40x3lewqskxaajs871vblkq` FOREIGN KEY (`user_id`) REFERENCES `role_user` (`username`),
   CONSTRAINT `FKge2xl1kmpkameyaarp2wen3qy` FOREIGN KEY (`ward_id`) REFERENCES `wards` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -207,7 +207,7 @@ DROP TABLE IF EXISTS `flood_location`;
 CREATE TABLE `flood_location` (
   `ward_id` char(6) NOT NULL,
   PRIMARY KEY (`ward_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -231,7 +231,7 @@ CREATE TABLE `provinces` (
   `name` varchar(45) DEFAULT NULL,
   `type` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -268,7 +268,7 @@ CREATE TABLE `registrations` (
   CONSTRAINT `FKcw1ksvifbw02xoghtfjr7de9p` FOREIGN KEY (`create_by_username`) REFERENCES `users` (`username`),
   CONSTRAINT `FKkqfhlnayyfabhlotcibjb3y7h` FOREIGN KEY (`saved_by_username`) REFERENCES `users` (`username`),
   CONSTRAINT `FKqbx0pvr83a4mujvgobb55k3qj` FOREIGN KEY (`ward_id`) REFERENCES `wards` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -294,7 +294,7 @@ CREATE TABLE `registrations_comment_list` (
   KEY `FKrd2ucud3ik0hupc5bq9vfu9hh` (`registration_id`),
   CONSTRAINT `FK9mhn3ogp81dec1lnfwemnxawn` FOREIGN KEY (`comment_list_id`) REFERENCES `comments` (`id`),
   CONSTRAINT `FKrd2ucud3ik0hupc5bq9vfu9hh` FOREIGN KEY (`registration_id`) REFERENCES `registrations` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -319,7 +319,7 @@ CREATE TABLE `rescuer_location_registration` (
   `location_id` char(6) DEFAULT NULL,
   `location_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -347,7 +347,7 @@ CREATE TABLE `road_points` (
   PRIMARY KEY (`id`),
   KEY `FKnd75mj0vika9ka77ysvitc9au` (`road_id`),
   CONSTRAINT `FKnd75mj0vika9ka77ysvitc9au` FOREIGN KEY (`road_id`) REFERENCES `roads` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -372,7 +372,7 @@ CREATE TABLE `roads` (
   PRIMARY KEY (`id`),
   KEY `FKkemwar1wnjuhhbxgrlcy7k30j` (`ward_id`),
   CONSTRAINT `FKkemwar1wnjuhhbxgrlcy7k30j` FOREIGN KEY (`ward_id`) REFERENCES `wards` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -400,7 +400,7 @@ CREATE TABLE `role_authority` (
   KEY `FK4xtyye9ml3xp6hkm7pjmgkbdq` (`ward_id`),
   CONSTRAINT `FK4xtyye9ml3xp6hkm7pjmgkbdq` FOREIGN KEY (`ward_id`) REFERENCES `wards` (`id`),
   CONSTRAINT `FKt03aii6jya9r4hi5ddxxj4xin` FOREIGN KEY (`farther_username`) REFERENCES `role_authority` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -430,7 +430,7 @@ CREATE TABLE `role_rescuer` (
   CONSTRAINT `FK5shrm3hwc99gfhths2bmum32r` FOREIGN KEY (`ward_id`) REFERENCES `wards` (`id`),
   CONSTRAINT `FK5tmkh3kc45k7slkkotj57jddv` FOREIGN KEY (`in_saving_id`) REFERENCES `registrations` (`id`),
   CONSTRAINT `FKo5fv8wyncxcqwn3fdcdu6321v` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -453,7 +453,7 @@ CREATE TABLE `role_user` (
   `username` varchar(20) NOT NULL,
   PRIMARY KEY (`username`),
   CONSTRAINT `FK9uoybf6aoobaem8e7ulimn28l` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -479,7 +479,7 @@ CREATE TABLE `role_volunteer` (
   PRIMARY KEY (`username`),
   KEY `FKhwimufhm63bm1vikpqyk7drum` (`ward_id`),
   CONSTRAINT `FKhwimufhm63bm1vikpqyk7drum` FOREIGN KEY (`ward_id`) REFERENCES `wards` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -502,7 +502,7 @@ CREATE TABLE `roles` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -528,7 +528,7 @@ CREATE TABLE `subscriber_registration` (
   KEY `FK4r03hs067j8tacedmrxu4jxly` (`user_id`),
   CONSTRAINT `FK3v63ugqxe6skh2n9oa2vxarmt` FOREIGN KEY (`registration_id`) REFERENCES `registrations` (`id`),
   CONSTRAINT `FK4r03hs067j8tacedmrxu4jxly` FOREIGN KEY (`user_id`) REFERENCES `role_user` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -554,7 +554,7 @@ CREATE TABLE `user_roles` (
   KEY `FKh8ciramu9cc9q3qcqiv4ue8a6` (`role_id`),
   CONSTRAINT `FKh8ciramu9cc9q3qcqiv4ue8a6` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`),
   CONSTRAINT `FKs9rxtuttxq2ln7mtp37s4clce` FOREIGN KEY (`user_username`) REFERENCES `users` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -582,7 +582,7 @@ CREATE TABLE `users` (
   `phone` varchar(11) DEFAULT NULL,
   PRIMARY KEY (`username`),
   UNIQUE KEY `UK6dotkott2kjsp8vw4d0m25fb7` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -607,7 +607,7 @@ CREATE TABLE `volunteer_location_registration` (
   `location_id` char(6) DEFAULT NULL,
   `location_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -634,7 +634,7 @@ CREATE TABLE `wards` (
   PRIMARY KEY (`id`),
   KEY `FKfjqt744bo800mb5uax74lav8k` (`district_id`),
   CONSTRAINT `FKfjqt744bo800mb5uax74lav8k` FOREIGN KEY (`district_id`) REFERENCES `districts` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
