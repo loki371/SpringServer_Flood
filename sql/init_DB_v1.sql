@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS `authority_location_registration`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `authority_location_registration` (
-  `username` varchar(255) NOT NULL,
+  `username` varchar(20) NOT NULL,
   `is_rejected` bit(1) NOT NULL,
   `location_id` varchar(255) DEFAULT NULL,
   `location_type` varchar(255) DEFAULT NULL,
@@ -100,7 +100,7 @@ DROP TABLE IF EXISTS `districts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `districts` (
-  `id` varchar(255) NOT NULL,
+  `id` char(6) NOT NULL,
   `name` varchar(45) DEFAULT NULL,
   `type` varchar(45) DEFAULT NULL,
   `province_id` varchar(255) DEFAULT NULL,
@@ -127,8 +127,8 @@ DROP TABLE IF EXISTS `favorite_district`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `favorite_district` (
-  `user_id` varchar(255) NOT NULL,
-  `district_id` varchar(255) NOT NULL,
+  `user_id` varchar(20) NOT NULL,
+  `district_id` char(6) NOT NULL,
   KEY `FKkxfvl1pu5tbnw1yfc0idug47s` (`district_id`),
   KEY `FKcff8d1cxn31oacuj65csl1ck0` (`user_id`),
   CONSTRAINT `FKcff8d1cxn31oacuj65csl1ck0` FOREIGN KEY (`user_id`) REFERENCES `role_user` (`username`),
@@ -153,8 +153,8 @@ DROP TABLE IF EXISTS `favorite_province`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `favorite_province` (
-  `user_id` varchar(255) NOT NULL,
-  `province_id` varchar(255) NOT NULL,
+  `user_id` varchar(20) NOT NULL,
+  `province_id` char(6) NOT NULL,
   KEY `FKbrspacl7xkaa7gflqphggsl54` (`province_id`),
   KEY `FKrcfxeucjcqo5i1uc01k0qol5j` (`user_id`),
   CONSTRAINT `FKbrspacl7xkaa7gflqphggsl54` FOREIGN KEY (`province_id`) REFERENCES `provinces` (`id`),
@@ -179,7 +179,7 @@ DROP TABLE IF EXISTS `favorite_ward`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `favorite_ward` (
-  `user_id` varchar(255) NOT NULL,
+  `user_id` varchar(20) NOT NULL,
   `ward_id` char(6) NOT NULL,
   KEY `FKge2xl1kmpkameyaarp2wen3qy` (`ward_id`),
   KEY `FKdr40x3lewqskxaajs871vblkq` (`user_id`),
@@ -205,7 +205,7 @@ DROP TABLE IF EXISTS `flood_location`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `flood_location` (
-  `ward_id` varchar(255) NOT NULL,
+  `ward_id` char(6) NOT NULL,
   PRIMARY KEY (`ward_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -227,7 +227,7 @@ DROP TABLE IF EXISTS `provinces`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `provinces` (
-  `id` varchar(255) NOT NULL,
+  `id` char(6) NOT NULL,
   `name` varchar(45) DEFAULT NULL,
   `type` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -258,8 +258,8 @@ CREATE TABLE `registrations` (
   `name` varchar(45) DEFAULT NULL,
   `num_person` int NOT NULL,
   `phone` varchar(255) DEFAULT NULL,
-  `create_by_username` varchar(255) DEFAULT NULL,
-  `saved_by_username` varchar(255) DEFAULT NULL,
+  `create_by_username` varchar(20) DEFAULT NULL,
+  `saved_by_username` varchar(20) DEFAULT NULL,
   `ward_id` char(6) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKcw1ksvifbw02xoghtfjr7de9p` (`create_by_username`),
@@ -314,9 +314,9 @@ DROP TABLE IF EXISTS `rescuer_location_registration`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rescuer_location_registration` (
-  `username` varchar(255) NOT NULL,
+  `username` varchar(20) NOT NULL,
   `is_rejected` bit(1) NOT NULL,
-  `location_id` varchar(255) DEFAULT NULL,
+  `location_id` char(6) DEFAULT NULL,
   `location_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -393,7 +393,7 @@ DROP TABLE IF EXISTS `role_authority`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `role_authority` (
   `username` varchar(20) NOT NULL,
-  `farther_username` varchar(255) DEFAULT NULL,
+  `farther_username` varchar(20) DEFAULT NULL,
   `ward_id` char(6) DEFAULT NULL,
   PRIMARY KEY (`username`),
   KEY `FKt03aii6jya9r4hi5ddxxj4xin` (`farther_username`),
@@ -548,7 +548,7 @@ DROP TABLE IF EXISTS `user_roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_roles` (
-  `user_username` varchar(255) NOT NULL,
+  `user_username` varchar(20) NOT NULL,
   `role_id` int NOT NULL,
   PRIMARY KEY (`user_username`,`role_id`),
   KEY `FKh8ciramu9cc9q3qcqiv4ue8a6` (`role_id`),
@@ -602,7 +602,7 @@ DROP TABLE IF EXISTS `volunteer_location_registration`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `volunteer_location_registration` (
-  `username` varchar(255) NOT NULL,
+  `username` varchar(20) NOT NULL,
   `is_rejected` bit(1) NOT NULL,
   `location_id` varchar(255) DEFAULT NULL,
   `location_type` varchar(255) DEFAULT NULL,
