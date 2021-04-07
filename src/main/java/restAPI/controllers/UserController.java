@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/v1/api/users")
 public class UserController {

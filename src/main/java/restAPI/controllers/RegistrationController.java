@@ -13,6 +13,7 @@ import restAPI.services.RegistrationService;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/v1/api/registrations")
 public class RegistrationController {

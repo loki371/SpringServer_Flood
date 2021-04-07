@@ -17,6 +17,7 @@ import restAPI.services.UserInfoService;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/v1/api/locationRegistrations")
 public class LocationRegistrationController {

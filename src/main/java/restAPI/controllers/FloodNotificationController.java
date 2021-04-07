@@ -10,6 +10,8 @@ import restAPI.services.WardService;
 
 import java.util.List;
 
+
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/v1/api/floodNotifications")
 public class FloodNotificationController {
