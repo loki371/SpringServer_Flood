@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `authority_location_registration`;
 CREATE TABLE `authority_location_registration` (
   `username` varchar(20) NOT NULL,
   `is_rejected` bit(1) NOT NULL,
-  `location_id` varchar(255) DEFAULT NULL,
+  `location_id` char(6) DEFAULT NULL,
   `location_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -522,7 +522,7 @@ DROP TABLE IF EXISTS `subscriber_registration`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `subscriber_registration` (
-  `user_id` varchar(255) NOT NULL,
+  `user_id` varchar(20) NOT NULL,
   `registration_id` bigint NOT NULL,
   KEY `FK3v63ugqxe6skh2n9oa2vxarmt` (`registration_id`),
   KEY `FK4r03hs067j8tacedmrxu4jxly` (`user_id`),
@@ -604,7 +604,7 @@ DROP TABLE IF EXISTS `volunteer_location_registration`;
 CREATE TABLE `volunteer_location_registration` (
   `username` varchar(20) NOT NULL,
   `is_rejected` bit(1) NOT NULL,
-  `location_id` varchar(255) DEFAULT NULL,
+  `location_id` char(6) DEFAULT NULL,
   `location_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -630,7 +630,7 @@ CREATE TABLE `wards` (
   `id` char(6) NOT NULL,
   `name` varchar(45) DEFAULT NULL,
   `type` varchar(45) DEFAULT NULL,
-  `district_id` varchar(255) DEFAULT NULL,
+  `district_id` char(6) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKfjqt744bo800mb5uax74lav8k` (`district_id`),
   CONSTRAINT `FKfjqt744bo800mb5uax74lav8k` FOREIGN KEY (`district_id`) REFERENCES `districts` (`id`)
