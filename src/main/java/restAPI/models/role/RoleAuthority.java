@@ -28,7 +28,7 @@ public class RoleAuthority {
 
     @ManyToOne
     @JsonIgnore
-    private UserInfo farther;
+    private RoleAuthority farther;
 
     public RoleAuthority(UserInfo userInfo) {
         this.username = userInfo.getUsername();

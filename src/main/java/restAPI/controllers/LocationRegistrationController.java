@@ -143,4 +143,55 @@ public class LocationRegistrationController {
         List<Object> list = locationRegistrationService.getListAllLocation(ERole.ROLE_RESCUER);
         return ResponseEntity.ok().body(new SimplePayload(list));
     }
+
+    @PostMapping("/authorities/{username}")
+    @PreAuthorize("hasRole('AUTHORITY')")
+    public ResponseEntity<?> processAuthorityRequest(@PathVariable String username, @RequestParam boolean accept,
+                                                     Authentication authentication) {
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        boolean checkingExistsRegistration = locationRegistrationService.checkExistsRequestOfUsername(username, ERole.ROLE_AUTHORITY);
+        if (!checkingExistsRegistration)
+            return ResponseEntity.notFound().build();
+
+        boolean result = locationRegistrationService.processAuthorityRegistration(userDetails.getUsername(), username, accept);
+
+        if (!result)
+            return ResponseEntity.badRequest().build();
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/rescuers/{username}")
+    @PreAuthorize("hasRole('AUTHORITY')")
+    public ResponseEntity<?> processRescuerRequest(@PathVariable String username, @RequestParam boolean accept,
+                                                   Authentication authentication) {
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        boolean checkingExistsRegistration = locationRegistrationService.checkExistsRequestOfUsername(username, ERole.ROLE_RESCUER);
+        if (!checkingExistsRegistration)
+            return ResponseEntity.notFound().build();
+
+        locationRegistrationService.processAuthorityRegistration(userDetails.getUsername(), username, accept);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/volunteers/{username}")
+    @PreAuthorize("hasRole('AUTHORITY')")
+    public ResponseEntity<?> processVolunteerRequest(@PathVariable String username, @RequestParam boolean accept,
+                                                     Authentication authentication) {
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        boolean checkingExistsRegistration = locationRegistrationService.checkExistsRequestOfUsername(username, ERole.ROLE_VOLUNTEER);
+        if (!checkingExistsRegistration)
+            return ResponseEntity.notFound().build();
+
+        locationRegistrationService.processAuthorityRegistration(userDetails.getUsername(), username, accept);
+
+        return ResponseEntity.ok().build();
+    }
 }

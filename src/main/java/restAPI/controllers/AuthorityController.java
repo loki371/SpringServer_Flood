@@ -5,11 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import restAPI.models.location.Ward;
 import restAPI.models.role.ERole;
 import restAPI.models.role.RoleAuthority;
 import restAPI.models.role.RoleVolunteer;
 import restAPI.payload.SimplePayload;
 import restAPI.repository.UserRepository;
+import restAPI.repository.location.WardRepository;
 import restAPI.repository.role.RoleAuthorityRepository;
 import restAPI.repository.role.RoleVolunteerRepository;
 import restAPI.services.UserInfoService;
@@ -31,6 +33,9 @@ public class AuthorityController {
     UserInfoService userInfoUtils;
 
     private final ERole finalERole = ERole.ROLE_AUTHORITY;
+
+    @Autowired
+    WardRepository wardRepository;
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -100,4 +105,31 @@ public class AuthorityController {
 
         return new ResponseEntity<>(new SimplePayload("ok", username), HttpStatus.OK);
     }
+
+    @PutMapping("/{username}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> addLocationForAuthority(@PathVariable("username") String username,
+                                                    @RequestParam String wardId) {
+        if (!userRepository.existsByUsername(username))
+            return new ResponseEntity<>(new SimplePayload("User " + username + " is not found"), HttpStatus.BAD_REQUEST);
+
+        if (!roleRepository.existsByUsername(username))
+            return new ResponseEntity<>(new SimplePayload("User " + username + " do not have role authority."), HttpStatus.BAD_REQUEST);
+
+        if (!wardRepository.existsById(wardId))
+            return new ResponseEntity<>(new SimplePayload("WardId " + wardId + " is not found."), HttpStatus.BAD_REQUEST);
+
+        RoleAuthority roleAuthority = roleRepository.findByUsername(username).get();
+
+        Ward ward = wardRepository.findById(wardId).get();
+
+        roleAuthority.setWard(ward);
+
+        roleRepository.save(roleAuthority);
+
+        SimplePayload payload = new SimplePayload("ok", roleAuthority.getWard());
+
+        return new ResponseEntity<>(payload, HttpStatus.OK);
+    }
+
 }

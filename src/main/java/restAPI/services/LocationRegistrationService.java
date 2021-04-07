@@ -2,22 +2,28 @@ package restAPI.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import restAPI.Constants;
+import restAPI.models.location.Ward;
 import restAPI.models.locationRegistration.AuthorityLocationRegistration;
 import restAPI.models.locationRegistration.RescuerLocationRegistration;
 import restAPI.models.locationRegistration.VolunteerLocationRegistration;
 import restAPI.models.role.ERole;
+import restAPI.models.role.RoleAuthority;
+import restAPI.repository.location.WardRepository;
 import restAPI.repository.locationRegistration.AuthorityRegistrationRepository;
 import restAPI.repository.locationRegistration.RescuerRegistrationRepository;
 import restAPI.repository.locationRegistration.VolunteerRegistrationRepository;
+import restAPI.repository.role.RoleAuthorityRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LocationRegistrationService {
 
     @Autowired
-    AuthorityRegistrationRepository authorityRepository;
+    AuthorityRegistrationRepository authorityRegistrationRepository;
 
     @Autowired
     RescuerRegistrationRepository rescuerRegistrationRepository;
@@ -25,15 +31,21 @@ public class LocationRegistrationService {
     @Autowired
     VolunteerRegistrationRepository volunteerRegistrationRepository;
 
+    @Autowired
+    RoleAuthorityRepository roleAuthorityRepository;
+
+    @Autowired
+    WardRepository wardRepository;
+
     public boolean addRegistrationToLocation(String username, String locationId, String locationType, ERole eRole) {
         switch (eRole) {
             case ROLE_AUTHORITY:
 
-                if (authorityRepository.existsById(username))
+                if (authorityRegistrationRepository.existsById(username))
                     return false;
 
                 AuthorityLocationRegistration regis1 = new AuthorityLocationRegistration(username, locationId, locationType);
-                authorityRepository.save(regis1);
+                authorityRegistrationRepository.save(regis1);
 
                 break;
 
@@ -67,7 +79,7 @@ public class LocationRegistrationService {
         List<Object> result = new ArrayList<>();
         switch (eRole) {
             case ROLE_AUTHORITY:
-                List<AuthorityLocationRegistration> list1 = authorityRepository.findAll();
+                List<AuthorityLocationRegistration> list1 = authorityRegistrationRepository.findAll();
                 result.addAll(list1);
                 break;
 
@@ -82,5 +94,66 @@ public class LocationRegistrationService {
                 break;
         }
         return result;
+    }
+
+    public boolean processAuthorityRegistration(String fatherUsername, String childUsername, boolean accepting) {
+        Optional<RoleAuthority> authority = roleAuthorityRepository.findByUsername(fatherUsername);
+        if (!authority.isPresent())
+            return false;
+
+        RoleAuthority realAuthority = authority.get();
+
+        AuthorityLocationRegistration registration = authorityRegistrationRepository.findByUsername(childUsername).get();
+
+        String locationTypeOfRegistration = registration.getLocationType();
+
+        if (locationTypeOfRegistration.equals(Constants.WARD_TYPE)) {
+            if (realAuthority.getWard() == null)
+                return false;
+
+            String authorityLocation = realAuthority.getWard().getId();
+            String childRequestLocation = registration.getLocationId();
+
+            if (authorityLocation.equals(childRequestLocation)) {
+                if (!accepting) {
+                    registration.setRejected(true);
+                    authorityRegistrationRepository.save(registration);
+                }
+                else {
+                    RoleAuthority childAuthority = roleAuthorityRepository.findByUsername(childUsername).get();
+                    childAuthority.setFarther(realAuthority);
+
+                    Ward ward = wardRepository.findById(registration.getLocationId()).get();
+                    childAuthority.setWard(ward);
+                }
+                return true;
+            }
+            else
+                return false;
+        }
+        else if (locationTypeOfRegistration.equals(Constants.DISTRICT_TYPE)) {
+            return false;
+        }
+        else if (locationTypeOfRegistration.equals(Constants.PROVINCE_TYPE)) {
+            return false;
+        }
+        else
+            return false;
+    }
+
+    public boolean checkExistsRequestOfUsername(String username, ERole eRole) {
+        switch (eRole) {
+            case ROLE_AUTHORITY:
+                return authorityRegistrationRepository.existsByUsername(username);
+
+            case ROLE_RESCUER:
+                return rescuerRegistrationRepository.existsByUsername(username);
+
+            case ROLE_VOLUNTEER:
+                return volunteerRegistrationRepository.existsByUsername(username);
+
+            default:
+                return false;
+        }
     }
 }
