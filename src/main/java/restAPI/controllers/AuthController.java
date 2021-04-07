@@ -15,10 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import restAPI.Constants;
 import restAPI.models.role.*;
@@ -33,6 +30,7 @@ import restAPI.security.jwt.JwtUtils;
 import restAPI.security.services.UserDetailsImpl;
 import restAPI.services.RoleService;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/v1/api/auth")
 public class AuthController {
