@@ -156,4 +156,39 @@ public class LocationRegistrationService {
                 return false;
         }
     }
+
+    public boolean deleteRegistrationOfLocation(String username, String locationId, String locationType, ERole eRole) {
+        switch (eRole) {
+            case ROLE_AUTHORITY:
+
+                if (!authorityRegistrationRepository.existsById(username))
+                    return false;
+
+                authorityRegistrationRepository.deleteById(username);
+
+                break;
+
+            case ROLE_RESCUER:
+
+                if (!rescuerRegistrationRepository.existsById(username))
+                    return false;
+
+                rescuerRegistrationRepository.deleteById(username);
+
+                break;
+
+            case ROLE_VOLUNTEER:
+
+                if (!volunteerRegistrationRepository.existsById(username))
+                    return false;
+
+                volunteerRegistrationRepository.deleteById(username);
+
+                break;
+
+            default:
+                return false;
+        }
+        return true;
+    }
 }

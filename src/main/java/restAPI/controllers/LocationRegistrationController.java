@@ -124,6 +124,34 @@ public class LocationRegistrationController {
         return ResponseEntity.ok().body(new SimplePayload("created!"));
     }
 
+    @DeleteMapping("/wards/{wardId}")
+    @PreAuthorize("hasRole('AUTHORITY') or hasRole('VOLUNTEER') or hasRole('RESCUER')")
+    public ResponseEntity<?> deleteWardRegistration(
+            @PathVariable String wardId,
+            @RequestParam("eRole") ERole eRole,
+            Authentication authentication
+    ) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        if (!wardRepository.existsById(wardId))
+            return ResponseEntity.notFound().build();
+
+        if (!userInfoService.hasERoleInUserInfo(userDetails.getUserInfo(), eRole))
+            return ResponseEntity.badRequest().body(new SimplePayload("this user do not has role " + eRole.name()));
+
+        boolean result = locationRegistrationService.deleteRegistrationOfLocation(
+                userDetails.getUsername(),
+                wardId,
+                Constants.WARD_TYPE,
+                eRole);
+
+        if (!result)
+            return ResponseEntity.badRequest().body(
+                    new SimplePayload("registration do not exists!"));
+
+        return ResponseEntity.ok().body(new SimplePayload("created!"));
+    }
+
     @GetMapping("/authorities")
     @PreAuthorize("hasRole('AUTHORITY')")
     public ResponseEntity<?> getAllLocationRegistrationForAuthority() {
