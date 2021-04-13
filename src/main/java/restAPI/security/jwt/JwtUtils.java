@@ -1,5 +1,6 @@
 package restAPI.security.jwt;
 
+import java.util.Base64;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -24,22 +25,25 @@ public class JwtUtils {
 	public String generateJwtToken(Authentication authentication) {
 
 		UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-
-		return Jwts.builder()
-				.setSubject((userPrincipal.getUsername()))
-				.setIssuedAt(new Date())
-				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-				.signWith(SignatureAlgorithm.HS512, jwtSecret)
-				.compact();
+		String compact;
+		JwtBuilder builder = Jwts.builder();
+		builder.setSubject((userPrincipal.getUsername()));
+		builder.setIssuedAt(new Date());
+		builder.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs));
+		builder.signWith(SignatureAlgorithm.HS512, getJwtSecretKey());
+		compact = builder.compact();
+		return compact;
 	}
 
 	public String getUserNameFromJwtToken(String token) {
-		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+		return Jwts.parser()
+				.setSigningKey(getJwtSecretKey())
+				.parseClaimsJws(token).getBody().getSubject();
 	}
 
 	public boolean validateJwtToken(String authToken) {
 		try {
-			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+			Jwts.parser().setSigningKey(getJwtSecretKey()).parseClaimsJws(authToken);
 			return true;
 		} catch (SignatureException e) {
 			logger.error("Invalid JWT signature: {}", e.getMessage());
@@ -54,5 +58,9 @@ public class JwtUtils {
 		}
 
 		return false;
+	}
+
+	private String getJwtSecretKey() {
+		return Base64.getEncoder().encodeToString(jwtSecret.getBytes());
 	}
 }
