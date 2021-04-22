@@ -9,11 +9,14 @@ import restAPI.models.locationRegistration.RescuerLocationRegistration;
 import restAPI.models.locationRegistration.VolunteerLocationRegistration;
 import restAPI.models.role.ERole;
 import restAPI.models.role.RoleAuthority;
+import restAPI.models.role.RoleRescuer;
 import restAPI.repository.location.WardRepository;
 import restAPI.repository.locationRegistration.AuthorityRegistrationRepository;
 import restAPI.repository.locationRegistration.RescuerRegistrationRepository;
 import restAPI.repository.locationRegistration.VolunteerRegistrationRepository;
 import restAPI.repository.role.RoleAuthorityRepository;
+import restAPI.repository.role.RoleRescuerRepository;
+import restAPI.repository.role.RoleVolunteerRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,12 @@ public class LocationRegistrationService {
 
     @Autowired
     RoleAuthorityRepository roleAuthorityRepository;
+
+    @Autowired
+    RoleRescuerRepository roleRescuerRepository;
+
+    @Autowired
+    RoleVolunteerRepository roleVolunteerRepository;
 
     @Autowired
     WardRepository wardRepository;
@@ -108,8 +117,10 @@ public class LocationRegistrationService {
         String locationTypeOfRegistration = registration.getLocationType();
 
         if (locationTypeOfRegistration.equals(Constants.WARD_TYPE)) {
-            if (realAuthority.getWard() == null)
+            if (realAuthority.getWard() == null) {
+                System.out.println("Authority ward = NULL");
                 return false;
+            }
 
             String authorityLocation = realAuthority.getWard().getId();
             String childRequestLocation = registration.getLocationId();
@@ -118,13 +129,20 @@ public class LocationRegistrationService {
                 if (!accepting) {
                     registration.setRejected(true);
                     authorityRegistrationRepository.save(registration);
+
+                    System.out.println("name: " + childUsername + " accepting: false");
                 }
                 else {
+                    authorityRegistrationRepository.delete(registration);
+
                     RoleAuthority childAuthority = roleAuthorityRepository.findByUsername(childUsername).get();
                     childAuthority.setFarther(realAuthority);
 
                     Ward ward = wardRepository.findById(registration.getLocationId()).get();
                     childAuthority.setWard(ward);
+                    roleAuthorityRepository.save(childAuthority);
+
+                    System.out.println("name: " + childUsername + " accepting: true");
                 }
                 return true;
             }
@@ -138,6 +156,59 @@ public class LocationRegistrationService {
             return false;
         }
         else
+            return false;
+    }
+
+    public boolean processRescuerRegistration(String fatherUsername, String childUsername, boolean accepting) {
+        System.out.println("into processRescuerRegistration");
+
+        Optional<RoleAuthority> authority = roleAuthorityRepository.findByUsername(fatherUsername);
+        if (!authority.isPresent()) {
+            System.out.println("father authority is not exists");
+            return false;
+        }
+
+        RoleAuthority realAuthority = authority.get();
+
+        RescuerLocationRegistration registration = rescuerRegistrationRepository.findByUsername(childUsername).get();
+
+        String locationTypeOfRegistration = registration.getLocationType();
+        if (locationTypeOfRegistration.equals(Constants.WARD_TYPE)) {
+            if (realAuthority.getWard() == null) {
+                System.out.println("Authority ward = NULL");
+                return false;
+            }
+
+            String location = realAuthority.getWard().getId();
+            String childRequestLocation = registration.getLocationId();
+
+            if (location.equals(childRequestLocation)) {
+                if (!accepting) {
+
+                    registration.setRejected(true);
+                    rescuerRegistrationRepository.save(registration);
+
+                    System.out.println("name: " + childUsername + " accepting: false");
+                } else {
+                    rescuerRegistrationRepository.delete(registration);
+
+                    RoleRescuer child = roleRescuerRepository.findByUsername(childUsername).get();
+                    Ward ward = wardRepository.findById(registration.getLocationId()).get();
+                    child.setWard(ward);
+                    roleRescuerRepository.save(child);
+
+                    System.out.println("name: " + childUsername + " accepting: true");
+                }
+                return true;
+            } else
+                return false;
+        } else if (locationTypeOfRegistration.equals(Constants.DISTRICT_TYPE)) {
+            return false;
+
+        } else if (locationTypeOfRegistration.equals(Constants.PROVINCE_TYPE)) {
+            return false;
+
+        } else
             return false;
     }
 

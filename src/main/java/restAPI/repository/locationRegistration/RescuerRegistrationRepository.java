@@ -7,7 +7,7 @@ import restAPI.models.locationRegistration.RescuerLocationRegistration;
 import java.util.Optional;
 
 public interface RescuerRegistrationRepository extends JpaRepository<RescuerLocationRegistration, String> {
-    public Optional<AuthorityLocationRegistration> findByUsername(String username);
+    public Optional<RescuerLocationRegistration> findByUsername(String username);
 
     public boolean existsByUsername(String username);
 }
