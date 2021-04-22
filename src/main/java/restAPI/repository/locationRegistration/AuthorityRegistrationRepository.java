@@ -9,5 +9,7 @@ import java.util.Optional;
 public interface AuthorityRegistrationRepository extends JpaRepository<AuthorityLocationRegistration, String> {
     public Optional<AuthorityLocationRegistration> findByUsername(String username);
 
+    public List<AuthorityLocationRegistration> findAllByLocationId(String locationId);
+
     public boolean existsByUsername(String username);
 }

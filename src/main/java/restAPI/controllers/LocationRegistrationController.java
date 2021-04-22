@@ -154,22 +154,28 @@ public class LocationRegistrationController {
 
     @GetMapping("/authorities")
     @PreAuthorize("hasRole('AUTHORITY')")
-    public ResponseEntity<?> getAllLocationRegistrationForAuthority() {
-        List<Object> list = locationRegistrationService.getListAllLocation(ERole.ROLE_AUTHORITY);
+    public ResponseEntity<?> getAllLocationRegistrationForAuthority(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        List<Object> list = locationRegistrationService.getListAllLocation(ERole.ROLE_AUTHORITY, userDetails.getUsername());
         return ResponseEntity.ok().body(new SimplePayload(list));
     }
 
     @GetMapping("/volunteers")
     @PreAuthorize("hasRole('VOLUNTEER')")
-    public ResponseEntity<?> getAllLocationRegistrationForVolunteer() {
-        List<Object> list = locationRegistrationService.getListAllLocation(ERole.ROLE_VOLUNTEER);
+    public ResponseEntity<?> getAllLocationRegistrationForVolunteer(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        List<Object> list = locationRegistrationService.getListAllLocation(ERole.ROLE_VOLUNTEER, userDetails.getUsername());
         return ResponseEntity.ok().body(new SimplePayload(list));
     }
 
     @GetMapping("/rescuers")
     @PreAuthorize("hasRole('RESCUER')")
-    public ResponseEntity<?> getAllLocationRegistrationForRescuer() {
-        List<Object> list = locationRegistrationService.getListAllLocation(ERole.ROLE_RESCUER);
+    public ResponseEntity<?> getAllLocationRegistrationForRescuer(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        List<Object> list = locationRegistrationService.getListAllLocation(ERole.ROLE_RESCUER, userDetails.getUsername());
         return ResponseEntity.ok().body(new SimplePayload(list));
     }
 

@@ -85,21 +85,29 @@ public class LocationRegistrationService {
         return true;
     }
 
-    public List<Object> getListAllLocation(ERole eRole) {
+    public List<Object> getListAllLocation(ERole eRole, String username) {
         List<Object> result = new ArrayList<>();
+
+        RoleAuthority roleAuthority = roleAuthorityRepository.findByUsername(username).get();
+
+        Ward ward = roleAuthority.getWard();
+
+        if (roleAuthority.getWard() == null)
+            return result;
+
         switch (eRole) {
             case ROLE_AUTHORITY:
-                List<AuthorityLocationRegistration> list1 = authorityRegistrationRepository.findAll();
+                List<AuthorityLocationRegistration> list1 = authorityRegistrationRepository.findAllByLocationId(ward.getId());
                 result.addAll(list1);
                 break;
 
             case ROLE_RESCUER:
-                List<RescuerLocationRegistration> list2 = rescuerRegistrationRepository.findAll();
+                List<RescuerLocationRegistration> list2 = rescuerRegistrationRepository.findAllByLocationId(ward.getId());
                 result.addAll(list2);
                 break;
 
             case ROLE_VOLUNTEER:
-                List<VolunteerLocationRegistration> list3 = volunteerRegistrationRepository.findAll();
+                List<VolunteerLocationRegistration> list3 = volunteerRegistrationRepository.findAllByLocationId(ward.getId());
                 result.addAll(list3);
                 break;
         }
