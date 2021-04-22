@@ -10,6 +10,7 @@ import restAPI.models.locationRegistration.VolunteerLocationRegistration;
 import restAPI.models.role.ERole;
 import restAPI.models.role.RoleAuthority;
 import restAPI.models.role.RoleRescuer;
+import restAPI.models.role.RoleVolunteer;
 import restAPI.repository.location.WardRepository;
 import restAPI.repository.locationRegistration.AuthorityRegistrationRepository;
 import restAPI.repository.locationRegistration.RescuerRegistrationRepository;
@@ -211,6 +212,60 @@ public class LocationRegistrationService {
         } else
             return false;
     }
+
+    public boolean processVolunteerRegistration(String fatherUsername, String childUsername, boolean accepting) {
+        System.out.println("into processVolunteerRegistration");
+
+        Optional<RoleAuthority> authority = roleAuthorityRepository.findByUsername(fatherUsername);
+        if (!authority.isPresent()) {
+            System.out.println("father authority is not exists");
+            return false;
+        }
+
+        RoleAuthority realAuthority = authority.get();
+
+        VolunteerLocationRegistration registration = volunteerRegistrationRepository.findByUsername(childUsername).get();
+
+        String locationTypeOfRegistration = registration.getLocationType();
+        if (locationTypeOfRegistration.equals(Constants.WARD_TYPE)) {
+            if (realAuthority.getWard() == null) {
+                System.out.println("Authority ward = NULL");
+                return false;
+            }
+
+            String location = realAuthority.getWard().getId();
+            String childRequestLocation = registration.getLocationId();
+
+            if (location.equals(childRequestLocation)) {
+                if (!accepting) {
+
+                    registration.setRejected(true);
+                    volunteerRegistrationRepository.save(registration);
+
+                    System.out.println("name: " + childUsername + " accepting: false");
+                } else {
+                    volunteerRegistrationRepository.delete(registration);
+
+                    RoleVolunteer child = roleVolunteerRepository.findByUsername(childUsername).get();
+                    Ward ward = wardRepository.findById(registration.getLocationId()).get();
+                    child.setWard(ward);
+                    roleVolunteerRepository.save(child);
+
+                    System.out.println("name: " + childUsername + " accepting: true");
+                }
+                return true;
+            } else
+                return false;
+        } else if (locationTypeOfRegistration.equals(Constants.DISTRICT_TYPE)) {
+            return false;
+
+        } else if (locationTypeOfRegistration.equals(Constants.PROVINCE_TYPE)) {
+            return false;
+
+        } else
+            return false;
+    }
+
 
     public boolean checkExistsRequestOfUsername(String username, ERole eRole) {
         switch (eRole) {

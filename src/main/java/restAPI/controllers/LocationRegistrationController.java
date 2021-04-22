@@ -219,7 +219,7 @@ public class LocationRegistrationController {
         if (!checkingExistsRegistration)
             return ResponseEntity.notFound().build();
 
-        locationRegistrationService.processAuthorityRegistration(userDetails.getUsername(), username, accept);
+        locationRegistrationService.processVolunteerRegistration(userDetails.getUsername(), username, accept);
 
         return ResponseEntity.ok().build();
     }
