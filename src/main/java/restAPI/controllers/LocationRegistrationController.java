@@ -149,7 +149,7 @@ public class LocationRegistrationController {
             return ResponseEntity.badRequest().body(
                     new SimplePayload("registration do not exists!"));
 
-        return ResponseEntity.ok().body(new SimplePayload("created!"));
+        return ResponseEntity.ok().body(new SimplePayload("deleted!"));
     }
 
     @GetMapping("/authorities")
