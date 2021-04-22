@@ -2,15 +2,14 @@ package restAPI.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import restAPI.ErrorCode;
 import restAPI.models.UserInfo;
 import restAPI.models.location.Ward;
 import restAPI.models.registration.Comment;
 import restAPI.models.registration.EState;
 import restAPI.models.registration.Registration;
-import restAPI.models.role.RoleAuthority;
-import restAPI.models.role.RoleRescuer;
-import restAPI.models.role.RoleUser;
-import restAPI.models.role.RoleVolunteer;
+import restAPI.models.role.*;
+import restAPI.object_function.I_ObjectFunction;
 import restAPI.payload.RegistrationPayload;
 import restAPI.repository.registration.RegistrationRepository;
 import restAPI.repository.role.RoleAuthorityRepository;
@@ -164,5 +163,53 @@ public class RegistrationService {
         }
 
         return result;
+    }
+
+    public boolean changeStateRegistration(Registration registration, EState eState) {
+        return true;
+    }
+
+    public void changeNotifyFloodRegistration(String warId) {
+        Ward ward = wardService.getWardByWardId(warId);
+        if (ward == null)
+            return;
+
+        List<Registration> registrations = registrationRepository.findAllByWard(ward);
+
+        for (Registration item : registrations)
+            if (item.getEState() == EState.STATE_AUTHENTICATED)
+                item.setEState(EState.STATE_DANGER);
+
+        registrationRepository.saveAll(registrations);
+    }
+
+    public ErrorCode applyNewEStateToRegistration(Long regisId, String clientUsername, ERole clientRole, EState oldState, EState applyEState, I_ObjectFunction lastFunction) {
+        Ward ward = userInfoService.getWardOfUserRole(clientUsername, clientRole);
+        if (ward == null)
+            return ErrorCode.CLIENT_WARD_NOT_VALID;
+
+        Optional<Registration> registration = registrationRepository.findById(regisId);
+        if (!registration.isPresent())
+            return ErrorCode.REGISTRATION_NOT_FOUND;
+
+        Registration realRegis = registration.get();
+        if (!realRegis.getWard().getId().equals(ward.getId()))
+            return ErrorCode.CLIENT_WARD_NOT_EQUAL_REGIS_WARD;
+
+        if (realRegis.getEState() != oldState)
+            return ErrorCode.NEW_ESTATE_ISNOT_VALID;
+
+        realRegis.setEState(applyEState);
+
+        if (lastFunction != null) {
+            UserInfo userInfo = userInfoService.getUserInfoByUsername(clientUsername);
+            lastFunction.setUserInfo(userInfo);
+            lastFunction.setRegistration(realRegis);
+            lastFunction.execute();
+        }
+
+        registrationRepository.save(realRegis);
+
+        return ErrorCode.OK;
     }
 }

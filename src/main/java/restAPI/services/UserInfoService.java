@@ -3,11 +3,17 @@ package restAPI.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restAPI.models.UserInfo;
+import restAPI.models.location.Ward;
 import restAPI.models.role.*;
 import restAPI.repository.UserRepository;
+import restAPI.repository.role.RoleAuthorityRepository;
+import restAPI.repository.role.RoleRescuerRepository;
+import restAPI.repository.role.RoleUserRepository;
+import restAPI.repository.role.RoleVolunteerRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -19,6 +25,15 @@ public class UserInfoService {
     RoleService roleService;
 
     static final String UserInfo_NotFound = "UserInfo not found!";
+
+    @Autowired
+    RoleAuthorityRepository roleAuthorityRepository;
+    @Autowired
+    RoleRescuerRepository roleRescuerRepository;
+    @Autowired
+    RoleVolunteerRepository roleVolunteerRepository;
+    @Autowired
+    RoleUserRepository roleUserRepository;
 
 
     public UserInfo getUserInfoByUsername(String username) {
@@ -94,5 +109,26 @@ public class UserInfoService {
                 return true;
         }
         return false;
+    }
+
+    public Ward getWardOfUserRole(String username, ERole eRole) {
+        switch (eRole) {
+            case ROLE_USER:
+            case ROLE_ADMIN:
+                return null;
+
+            case ROLE_RESCUER:
+                Optional<RoleRescuer> roleRescuer = roleRescuerRepository.findByUsername(username);
+                return roleRescuer.map(RoleRescuer::getWard).orElse(null);
+
+            case ROLE_AUTHORITY:
+                Optional<RoleAuthority> roleAuthority = roleAuthorityRepository.findByUsername(username);
+                return roleAuthority.map(RoleAuthority::getWard).orElse(null);
+
+            case ROLE_VOLUNTEER:
+                Optional<RoleVolunteer> roleVolunteer = roleVolunteerRepository.findByUsername(username);
+                return roleVolunteer.map(RoleVolunteer::getWard).orElse(null);
+        }
+        return null;
     }
 }

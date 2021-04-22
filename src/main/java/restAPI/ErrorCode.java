@@ -1,0 +1,9 @@
+package restAPI;
+
+public enum ErrorCode {
+    OK,
+    REGISTRATION_NOT_FOUND,
+    CLIENT_WARD_NOT_VALID,
+    CLIENT_WARD_NOT_EQUAL_REGIS_WARD,
+    NEW_ESTATE_ISNOT_VALID
+}
