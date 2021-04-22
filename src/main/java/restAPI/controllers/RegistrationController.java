@@ -2,6 +2,7 @@ package restAPI.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import restAPI.models.UserInfo;
@@ -34,9 +35,21 @@ public class RegistrationController {
         return ResponseEntity.ok().body(new SimplePayload(registration));
     }
 
-    @GetMapping
-    public ResponseEntity<?> getAllRegistrations() {
-        List<Registration> registrationList = registrationService.getAllRegistrations();
+    @GetMapping("/AtLocation")
+    @PreAuthorize("hasRole('AUTHORITY') or hasRole('RESCUER') or hasRole('VOLUNTEER')")
+    public ResponseEntity<?> getAllRegistrations(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        List<Registration> registrationList = registrationService.getLocationRegistrations(userDetails.getUsername());
+        return ResponseEntity.ok().body(new SimplePayload(registrationList));
+    }
+
+    @GetMapping("/MyRegistrations")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getMyRegistrations(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        List<Registration> registrationList = registrationService.getMyRegistrations(userDetails.getUsername());
         return ResponseEntity.ok().body(new SimplePayload(registrationList));
     }
 }
