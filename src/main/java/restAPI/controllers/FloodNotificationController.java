@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import restAPI.grab.FloodWardService;
 import restAPI.models.registration.EState;
 import restAPI.models.registration.Registration;
 import restAPI.payload.SimplePayload;
@@ -32,6 +33,9 @@ public class FloodNotificationController {
     @Autowired
     RegistrationRepository registrationRepository;
 
+    @Autowired
+    FloodWardService floodWardService;
+
     @PostMapping("/{wardId}")
     @PreAuthorize("hasRole('AUTHORITY')")
     public ResponseEntity<?> createLocationInFloodNotification(@PathVariable String wardId) {
@@ -41,7 +45,9 @@ public class FloodNotificationController {
         boolean result = floodNotificationService.checkThenAddWardIdToFlood(wardId);
 
         if (result) {
-            registrationService.changeNotifyFloodRegistration(wardId);
+            List<Registration> registrations = registrationService.changeNotifyFloodRegistrationAndGetAllRegistrations(wardId);
+
+            floodWardService.createFloodingLocation(wardId, registrations);
 
             return ResponseEntity.ok().body(new SimplePayload("ok", wardId));
 

@@ -169,10 +169,10 @@ public class RegistrationService {
         return true;
     }
 
-    public void changeNotifyFloodRegistration(String warId) {
+    public List<Registration> changeNotifyFloodRegistrationAndGetAllRegistrations(String warId) {
         Ward ward = wardService.getWardByWardId(warId);
         if (ward == null)
-            return;
+            return null;
 
         List<Registration> registrations = registrationRepository.findAllByWard(ward);
 
@@ -181,6 +181,7 @@ public class RegistrationService {
                 item.setEState(EState.STATE_DANGER);
 
         registrationRepository.saveAll(registrations);
+        return registrations;
     }
 
     public ErrorCode applyNewEStateToRegistration(Long regisId, String clientUsername, ERole clientRole, EState oldState, EState applyEState, I_ObjectFunction lastFunction) {

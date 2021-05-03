@@ -3,6 +3,7 @@ package restAPI.repository.role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import restAPI.models.location.Ward;
 import restAPI.models.role.ERole;
 import restAPI.models.role.Role;
 import restAPI.models.role.RoleRescuer;
@@ -25,4 +26,6 @@ public interface RoleRescuerRepository extends JpaRepository<RoleRescuer, Long> 
 
     @Query("select t.username from RoleRescuer t")
     List<String> findAllUsername();
+
+    List<RoleRescuer> findAllByWard(Ward ward);
 }
