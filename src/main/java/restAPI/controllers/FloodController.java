@@ -150,4 +150,26 @@ public class FloodController {
 
         return ResponseEntity.ok(new SimplePayload("ok"));
     }
+
+    @PostMapping("/stop")
+    @PreAuthorize("hasRole('RESCUER')")
+    public ResponseEntity<?> stopRescuing(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        RoleRescuer roleRescuer = roleRescuerRepository.findByUsername(userDetails.getUsername()).get();
+
+        Ward ward = roleRescuer.getWard();
+        if (ward == null)
+            return ResponseEntity.badRequest().body(new SimplePayload("you do not have any ward"));
+
+        if (!floodWardService.checkInFlood(ward.getId()))
+            return ResponseEntity.badRequest().body(new SimplePayload("this location do not have any flood"));
+
+        if (!floodWardService.checkRescuerStarted(userDetails.getUsername(), roleRescuer.getWard().getId()))
+            return ResponseEntity.badRequest().body(new SimplePayload("rescuer must start before get destinations"));
+
+
+        floodWardService.stop(userDetails.getUsername(), ward.getId());
+
+        return ResponseEntity.ok(new SimplePayload("ok"));
+    }
 }

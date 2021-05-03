@@ -99,4 +99,9 @@ public class FloodWardService {
         FloodWard floodWard = floodingWardMap.get(wardId);
         return floodWard.decreasePeopleOnRescuerBoard(rescuerUsername, numPeople);
     }
+
+    public void stop(String rescuerUsername, String wardId) {
+        FloodWard floodWard = floodingWardMap.get(wardId);
+        floodWard.stopRescuer(rescuerUsername);
+    }
 }

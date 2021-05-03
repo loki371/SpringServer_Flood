@@ -70,21 +70,9 @@ public class FloodWard {
         rescuerManager.createNewRescuerInMgr(rescuer.getUsername(), boardSize, location);
     }
 
-    public synchronized void addDestinationToFloodWard(Registration registration) {
-
-    }
-
     public synchronized List<FloodRegistration> getDestinationForRescuer(String rescuerId) {
         System.out.println("FloodWard.getDestinationForRescuer");
         return destinationManager.getRegistrationsOfRescuer(rescuerId);
-    }
-
-    public synchronized boolean removeDestination(String regisId) {
-        return false;
-    }
-
-    public synchronized boolean removeRescuer(String rescuerId) {
-        return false;
     }
 
     public synchronized boolean saveDestination(String rescuerId, long regisId, RegistrationRepository registrationRepository) {
@@ -134,5 +122,14 @@ public class FloodWard {
     public synchronized boolean decreasePeopleOnRescuerBoard(String rescuerUsername, int numPeople) {
         FloodRescuer floodRescuer = rescuerManager.getRescuer(rescuerUsername);
         return floodRescuer.decreaseNumPeopleOnBoard(numPeople);
+    }
+
+    public synchronized boolean stopRescuer(String rescuerUsername) {
+        FloodRescuer floodRescuer = rescuerManager.getRescuer(rescuerUsername);
+        List<Registration> registrationList = floodRescuer.getFloodDestinations();
+        for (Registration item : registrationList) {
+            destinationManager.setNullRescuerToDestination(item.getId());
+        }
+        return true;
     }
 }

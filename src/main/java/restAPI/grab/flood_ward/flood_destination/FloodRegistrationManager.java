@@ -3,6 +3,7 @@ package restAPI.grab.flood_ward.flood_destination;
 import restAPI.grab.FloodWardService;
 import restAPI.grab.flood_ward.FloodWard;
 import restAPI.grab.flood_ward.entity.FloodRegistration;
+import restAPI.grab.flood_ward.entity.FloodRescuer;
 import restAPI.models.registration.Registration;
 
 import java.util.ArrayList;
@@ -43,5 +44,10 @@ public class FloodRegistrationManager {
 
     public void remove(long regisId) {
         floodRegistrationMap.remove(regisId);
+    }
+
+    public void setNullRescuerToDestination(long regisId) {
+        FloodRegistration floodRegistration = floodRegistrationMap.get(regisId);
+        floodRegistration.setRescuerUsername(null);
     }
 }
