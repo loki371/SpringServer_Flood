@@ -50,4 +50,9 @@ public class FloodRegistrationManager {
         FloodRegistration floodRegistration = floodRegistrationMap.get(regisId);
         floodRegistration.setRescuerUsername(null);
     }
+
+    public void addRegistration(Registration registration) {
+        FloodRegistration floodRegistration = new FloodRegistration(registration, null);
+        this.floodRegistrationMap.put(registration.getId(), floodRegistration);
+    }
 }

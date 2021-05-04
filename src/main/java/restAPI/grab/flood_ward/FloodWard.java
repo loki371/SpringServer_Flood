@@ -132,4 +132,12 @@ public class FloodWard {
         }
         return true;
     }
+
+    public synchronized void addRegistration(Registration registration) {
+        destinationManager.addRegistration(registration);
+    }
+
+    public synchronized void removeRegistration(Registration registration) {
+        destinationManager.remove(registration.getId());
+    }
 }

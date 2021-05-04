@@ -10,14 +10,8 @@ import restAPI.models.location.Ward;
 import restAPI.models.registration.Registration;
 import restAPI.models.role.RoleRescuer;
 import restAPI.repository.registration.RegistrationRepository;
-import restAPI.repository.role.RoleRescuerRepository;
-import restAPI.services.RegistrationService;
-import restAPI.services.WardService;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -103,5 +97,15 @@ public class FloodWardService {
     public void stop(String rescuerUsername, String wardId) {
         FloodWard floodWard = floodingWardMap.get(wardId);
         floodWard.stopRescuer(rescuerUsername);
+    }
+
+    public void addRegistrationToFloodWard(String wardId, Registration registration) {
+        FloodWard floodWard = floodingWardMap.get(wardId);
+        floodWard.addRegistration(registration);
+    }
+
+    public void removeRegistrationFromFloodWard(String wardId, Registration registration) {
+        FloodWard floodWard = floodingWardMap.get(wardId);
+        floodWard.removeRegistration(registration);
     }
 }

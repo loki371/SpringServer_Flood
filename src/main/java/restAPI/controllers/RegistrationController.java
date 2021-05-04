@@ -6,14 +6,17 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import restAPI.ErrorCode;
+import restAPI.grab.FloodWardService;
 import restAPI.models.UserInfo;
 import restAPI.models.registration.EState;
 import restAPI.models.registration.Registration;
 import restAPI.models.role.ERole;
+import restAPI.object_function.FloodRegistrationAlter;
 import restAPI.object_function.I_ObjectFunction;
 import restAPI.object_function.SetSavedByFunction;
 import restAPI.payload.RegistrationPayload;
 import restAPI.payload.SimplePayload;
+import restAPI.repository.registration.RegistrationRepository;
 import restAPI.security.services.UserDetailsImpl;
 import restAPI.services.RegistrationService;
 
@@ -26,6 +29,12 @@ public class RegistrationController {
 
     @Autowired
     RegistrationService registrationService;
+
+    @Autowired
+    FloodWardService floodWardService;
+
+    @Autowired
+    RegistrationRepository registrationRepository;
 
     @PostMapping("/users")
     public ResponseEntity<?> addUserRegistration(@RequestBody RegistrationPayload request, Authentication authentication) {
@@ -65,6 +74,9 @@ public class RegistrationController {
                                                       @RequestParam("newState") EState newState) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
+        FloodRegistrationAlter lastAction = new FloodRegistrationAlter();
+        lastAction.setFloodWardService(floodWardService);
+
         switch (oldState) {
             case STATE_AUTHENTICATED:
             case STATE_UNAUTHENTICATED:
@@ -81,6 +93,10 @@ public class RegistrationController {
                 return ResponseEntity.badRequest().body(new SimplePayload("eState is not valid for volunteer, must be STATE_AUTHENTICATED or STATE_UNAUTHENTICATED"));
         }
 
+        lastAction.setOldState(oldState);
+        lastAction.setNewState(newState);
+        lastAction.setRegistrationRepository(registrationRepository);
+
         if (oldState == newState)
             return ResponseEntity.badRequest().body(new SimplePayload("oldState must be != newState"));
 
@@ -90,7 +106,7 @@ public class RegistrationController {
                 ERole.ROLE_AUTHORITY,
                 oldState,
                 newState,
-                null);
+                lastAction);
 
         if (errorCode == ErrorCode.OK)
             return ResponseEntity.ok(new SimplePayload("updated"));
@@ -104,10 +120,14 @@ public class RegistrationController {
                                                  @RequestParam("newState") EState newState) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
+        FloodRegistrationAlter lastAction = new FloodRegistrationAlter();
+        lastAction.setFloodWardService(floodWardService);
+
         switch (oldState) {
             case STATE_DANGER:
             case STATE_SAFE:
             case STATE_EMERGENCY:
+            case STATE_SAVED:
                 break;
             default:
                 return ResponseEntity.badRequest().body(new SimplePayload("oldState is not valid for volunteer"));
@@ -117,10 +137,15 @@ public class RegistrationController {
             case STATE_DANGER:
             case STATE_SAFE:
             case STATE_EMERGENCY:
+            case STATE_SAVED:
                 break;
             default:
                 return ResponseEntity.badRequest().body(new SimplePayload("newState is not valid for volunteer"));
         }
+
+        lastAction.setOldState(oldState);
+        lastAction.setNewState(newState);
+        lastAction.setRegistrationRepository(registrationRepository);
 
         if (oldState == newState)
             return ResponseEntity.badRequest().body(new SimplePayload("oldState must be != newState"));
@@ -131,7 +156,7 @@ public class RegistrationController {
                 ERole.ROLE_VOLUNTEER,
                 oldState,
                 newState,
-                null);
+                lastAction);
 
         if (errorCode == ErrorCode.OK)
             return ResponseEntity.ok(new SimplePayload("updated"));
@@ -139,22 +164,22 @@ public class RegistrationController {
             return ResponseEntity.badRequest().body(new SimplePayload(errorCode.toString()));
     }
 
-    @PutMapping("/rescuers/{registrationId}")
-    @PreAuthorize("hasRole('RESCUER')")
-    public ResponseEntity<?> saveRegistration(@PathVariable Long registrationId, Authentication authentication) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        ErrorCode errorCode = registrationService.applyNewEStateToRegistration(
-                registrationId,
-                userDetails.getUsername(),
-                ERole.ROLE_RESCUER,
-                EState.STATE_DANGER,
-                EState.STATE_SAVED,
-                new SetSavedByFunction());
-
-        if (errorCode == ErrorCode.OK)
-            return ResponseEntity.ok(new SimplePayload("updated"));
-        else
-            return ResponseEntity.badRequest().body(new SimplePayload(errorCode.toString()));
-    }
+//    @PutMapping("/rescuers/{registrationId}")
+//    @PreAuthorize("hasRole('RESCUER')")
+//    public ResponseEntity<?> saveRegistration(@PathVariable Long registrationId, Authentication authentication) {
+//        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+//
+//        ErrorCode errorCode = registrationService.applyNewEStateToRegistration(
+//                registrationId,
+//                userDetails.getUsername(),
+//                ERole.ROLE_RESCUER,
+//                EState.STATE_DANGER,
+//                EState.STATE_SAVED,
+//                new SetSavedByFunction());
+//
+//        if (errorCode == ErrorCode.OK)
+//            return ResponseEntity.ok(new SimplePayload("updated"));
+//        else
+//            return ResponseEntity.badRequest().body(new SimplePayload(errorCode.toString()));
+//    }
 }
