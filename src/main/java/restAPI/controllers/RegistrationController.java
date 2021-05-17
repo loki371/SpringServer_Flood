@@ -164,22 +164,4 @@ public class RegistrationController {
             return ResponseEntity.badRequest().body(new SimplePayload(errorCode.toString()));
     }
 
-//    @PutMapping("/rescuers/{registrationId}")
-//    @PreAuthorize("hasRole('RESCUER')")
-//    public ResponseEntity<?> saveRegistration(@PathVariable Long registrationId, Authentication authentication) {
-//        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-//
-//        ErrorCode errorCode = registrationService.applyNewEStateToRegistration(
-//                registrationId,
-//                userDetails.getUsername(),
-//                ERole.ROLE_RESCUER,
-//                EState.STATE_DANGER,
-//                EState.STATE_SAVED,
-//                new SetSavedByFunction());
-//
-//        if (errorCode == ErrorCode.OK)
-//            return ResponseEntity.ok(new SimplePayload("updated"));
-//        else
-//            return ResponseEntity.badRequest().body(new SimplePayload(errorCode.toString()));
-//    }
 }
