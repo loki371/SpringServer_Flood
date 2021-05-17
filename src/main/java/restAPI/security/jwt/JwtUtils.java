@@ -43,6 +43,7 @@ public class JwtUtils {
 
 	public boolean validateJwtToken(String authToken) {
 		try {
+			System.out.println("authToken" + authToken);
 			Jwts.parser().setSigningKey(getJwtSecretKey()).parseClaimsJws(authToken);
 			return true;
 		} catch (SignatureException e) {
