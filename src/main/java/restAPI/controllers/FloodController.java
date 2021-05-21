@@ -18,7 +18,9 @@ import restAPI.services.RegistrationService;
 
 import java.util.List;
 
-@RestController("/v1/api/rescuerSaving")
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
+@RequestMapping("/v1/api/rescuerSaving")
 public class FloodController {
 
     @Autowired
