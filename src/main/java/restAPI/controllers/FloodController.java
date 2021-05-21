@@ -18,7 +18,7 @@ import restAPI.services.RegistrationService;
 
 import java.util.List;
 
-@RestController
+@RestController("/v1/api/rescuerSaving")
 public class FloodController {
 
     @Autowired

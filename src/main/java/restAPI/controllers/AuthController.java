@@ -10,6 +10,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -69,7 +70,7 @@ public class AuthController {
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = jwtUtils.generateJwtToken(authentication);
-		
+
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
 		List<String> roles = userDetails.getAuthorities().stream()
@@ -77,8 +78,8 @@ public class AuthController {
 				.collect(Collectors.toList());
 
 		return ResponseEntity.ok(new JwtPayload(jwt,
-												 userDetails.getUsername(),
-												 roles));
+				userDetails.getUsername(),
+				roles));
 	}
 
 	@PostMapping("/signup")
@@ -98,54 +99,50 @@ public class AuthController {
 
 		// Create new user's account
 		UserInfo user = new UserInfo(signUpRequest.getUsername(),
-							 signUpRequest.getFirstname(),
-							 signUpRequest.getLastname(),
-							 signUpRequest.getPhone(),
-							 signUpRequest.getEmail(),
-							 encoder.encode(signUpRequest.getPassword()));
+				signUpRequest.getFirstname(),
+				signUpRequest.getLastname(),
+				signUpRequest.getPhone(),
+				signUpRequest.getEmail(),
+				encoder.encode(signUpRequest.getPassword()));
 
 		userRepository.save(user);
 
 		// add role
 		Set<Role> roles = new HashSet<>();
 		signUpRequest.getRole().forEach(
-			item -> {
-				Role roleAuthen = null;
+				item -> {
+					Role roleAuthen = null;
 
-				if (item.equals(Constants.ROLE_AUTHORITY)) {
+					if (item.equals(Constants.ROLE_AUTHORITY)) {
 
-					roleAuthen = roleUtils.getRoleByERole(ERole.ROLE_AUTHORITY);
+						roleAuthen = roleUtils.getRoleByERole(ERole.ROLE_AUTHORITY);
 
-					RoleAuthority role = new RoleAuthority(user);
-					roleAuthorityRepository.save(role);
+						RoleAuthority role = new RoleAuthority(user);
+						roleAuthorityRepository.save(role);
+					} else if (item.equals(Constants.ROLE_USER)) {
+
+						roleAuthen = roleUtils.getRoleByERole(ERole.ROLE_USER);
+
+						RoleUser role = new RoleUser(user);
+						roleUserRepository.save(role);
+					} else if (item.equals(Constants.ROLE_RESCUER)) {
+
+						roleAuthen = roleUtils.getRoleByERole(ERole.ROLE_RESCUER);
+
+						RoleRescuer role = new RoleRescuer(user);
+						roleRescuerRepository.save(role);
+					} else if (item.equals(Constants.ROLE_VOLUNTEER)) {
+
+						roleAuthen = roleUtils.getRoleByERole(ERole.ROLE_VOLUNTEER);
+
+						RoleVolunteer role = new RoleVolunteer(user);
+						roleVolunteerRepository.save(role);
+					} else if (item.equals(Constants.ROLE_ADMIN)) {
+						roleAuthen = roleUtils.getRoleByERole(ERole.ROLE_ADMIN);
+					}
+
+					roles.add(roleAuthen);
 				}
-				else if (item.equals(Constants.ROLE_USER)) {
-
-					roleAuthen = roleUtils.getRoleByERole(ERole.ROLE_USER);
-
-					RoleUser role = new RoleUser(user);
-					roleUserRepository.save(role);
-				}
-				else if (item.equals(Constants.ROLE_RESCUER)) {
-
-					roleAuthen = roleUtils.getRoleByERole(ERole.ROLE_RESCUER);
-
-					RoleRescuer role = new RoleRescuer(user);
-					roleRescuerRepository.save(role);
-				}
-				else if (item.equals(Constants.ROLE_VOLUNTEER)) {
-
-					roleAuthen = roleUtils.getRoleByERole(ERole.ROLE_VOLUNTEER);
-
-					RoleVolunteer role = new RoleVolunteer(user);
-					roleVolunteerRepository.save(role);
-				}
-				else if (item.equals(Constants.ROLE_ADMIN)) {
-					roleAuthen = roleUtils.getRoleByERole(ERole.ROLE_ADMIN);
-				}
-
-				roles.add(roleAuthen);
-			}
 		);
 		user.setRoles(roles);
 
@@ -153,5 +150,11 @@ public class AuthController {
 		userRepository.save(user);
 
 		return ResponseEntity.ok(new MessagePayload("User registered successfully!"));
+	}
+
+	@GetMapping("/validateToken")
+	@PreAuthorize("hasRole('AUTHORITY') or hasRole('VOLUNTEER') or hasRole('RESCUER')")
+	public ResponseEntity<?> validateToken() {
+		return ResponseEntity.ok(null);
 	}
 }
