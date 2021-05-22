@@ -6,16 +6,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import restAPI.buckets.RegistrationBucket;
 import restAPI.grab.FloodWardService;
 import restAPI.grab.flood_ward.entity.FloodRegistration;
 import restAPI.grab.flood_ward.entity.Location;
 import restAPI.models.location.Ward;
+import restAPI.models.registration.Registration;
 import restAPI.models.role.RoleRescuer;
 import restAPI.payload.SimplePayload;
 import restAPI.repository.role.RoleRescuerRepository;
 import restAPI.security.services.UserDetailsImpl;
 import restAPI.services.RegistrationService;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -38,7 +41,7 @@ public class FloodController {
         if (roleRescuer.getWard() == null)
             return ResponseEntity.badRequest().body(new SimplePayload("you must sign up to 1 ward"));
 
-        if(floodWardService.checkInFlood(roleRescuer.getWard().getId()))
+        if(!floodWardService.checkInFlood(roleRescuer.getWard().getId()))
             return ResponseEntity.badRequest().body(new SimplePayload("this ward do not have flood"));
 
         if (!floodWardService.checkRescuerStarted(userDetails.getUsername(), roleRescuer.getWard().getId()))
@@ -49,7 +52,21 @@ public class FloodController {
                         roleRescuer.getWard().getId(),
                         userDetails.getUsername());
 
-        return ResponseEntity.ok(new SimplePayload(floodRegistrationList));
+        List<RegistrationBucket> resultList = new LinkedList<>();
+        for (FloodRegistration item : floodRegistrationList) {
+            Registration item1 = item.getRegistration();
+            RegistrationBucket bucket = new RegistrationBucket();
+            bucket.id = item1.getId();
+            bucket.eState = item1.getEState();
+            bucket.latitude = item1.getLatitude();
+            bucket.longitude = item1.getLongitude();
+            bucket.name = item1.getName();
+            bucket.phone = item1.getPhone();
+            bucket.numPerson = item1.getNumPerson();
+            bucket.ward = item1.getWard();
+            resultList.add(bucket);
+        }
+        return ResponseEntity.ok(new SimplePayload(resultList));
     }
 
     @PostMapping("/GPS")
@@ -64,7 +81,7 @@ public class FloodController {
             return ResponseEntity.badRequest().body(new SimplePayload("you do not have any ward"));
 
         Ward ward = roleRescuer.getWard();
-        if (floodWardService.checkInFlood(ward.getId()))
+        if (!floodWardService.checkInFlood(ward.getId()))
             return ResponseEntity.badRequest().body(new SimplePayload("this location do not have flood"));
 
         if (!floodWardService.checkRescuerStarted(userDetails.getUsername(), roleRescuer.getWard().getId()))
@@ -88,7 +105,7 @@ public class FloodController {
             return ResponseEntity.badRequest().body(new SimplePayload("you do not have any ward"));
 
         Ward ward = roleRescuer.getWard();
-        if (floodWardService.checkInFlood(ward.getId()))
+        if (!floodWardService.checkInFlood(ward.getId()))
             return ResponseEntity.badRequest().body(new SimplePayload("this location do not have flood"));
 
         if (!floodWardService.checkRescuerStarted(userDetails.getUsername(), roleRescuer.getWard().getId()))
@@ -117,7 +134,7 @@ public class FloodController {
             return ResponseEntity.badRequest().body(new SimplePayload("you do not have any ward"));
 
         Ward ward = roleRescuer.getWard();
-        if (floodWardService.checkInFlood(ward.getId()))
+        if (!floodWardService.checkInFlood(ward.getId()))
             return ResponseEntity.badRequest().body(new SimplePayload("this location do not have flood"));
 
         if (!floodWardService.checkRescuerStarted(userDetails.getUsername(), roleRescuer.getWard().getId()))

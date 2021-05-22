@@ -8,12 +8,12 @@ import restAPI.models.registration.Registration;
 import java.util.*;
 
 public class FloodRescuerManager {
-    private Map<String, FloodRescuer> rescuerMap;
+    private Map<String, FloodRescuer> rescuerMap = new HashMap<>();
 
     public FloodRescuer createNewRescuerInMgr(String rescuerId,
                                               int maxNumberOnBoard,
                                               Location location) {
-        System.out.println("FloodRescuerManager.createNewRescuerInMgr");
+        System.out.println("FloodRescuerManager.createNewRescuerInMgr: rescuerId = " + rescuerId);
 
         if (rescuerMap.containsKey(rescuerId))
             return null;
@@ -31,7 +31,7 @@ public class FloodRescuerManager {
     }
 
     public FloodRescuer getRescuer(String username) {
-        System.out.println("FloodRescuerManager.getRescuer");
+        System.out.println("FloodRescuerManager.getRescuer rescuerId = " + username);
         return rescuerMap.get(username);
     }
 

@@ -3,10 +3,7 @@ package restAPI.grab.flood_ward.entity;
 import restAPI.grab.flood_ward.entity.Location;
 import restAPI.models.registration.Registration;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FloodRescuer {
     public final String rescuerId;
@@ -18,7 +15,7 @@ public class FloodRescuer {
 
     private int numPeopleOnBoard;
     private int maximumChair;
-    private List<Registration> floodDestinations;
+    private List<FloodRegistration> floodDestinations;
 
     private long lastActivateTime;
 
@@ -60,21 +57,23 @@ public class FloodRescuer {
         return new Location(longitude, latitude);
     }
 
-    public synchronized void setFloodDestinations(List<Registration> newDestinations) {
+    public synchronized void setFloodDestinations(List<FloodRegistration> newDestinations) {
         this.floodDestinations = newDestinations;
     }
 
-    public synchronized List<Registration> getFloodDestinations() {
+    public synchronized List<FloodRegistration> getFloodDestinations() {
         return new LinkedList<>(this.floodDestinations);
     }
 
     public synchronized void addToListRegis(FloodRegistration item) {
-
+        if (floodDestinations == null)
+            floodDestinations = new LinkedList<>();
+        floodDestinations.add(item);
     }
 
     public synchronized boolean containRegis(long regidId) {
-        for (Registration item : floodDestinations)
-            if (item.getId() == regidId)
+        for (FloodRegistration item : floodDestinations)
+            if (item.getRegistration().getId() == regidId)
                 return true;
         return false;
     }

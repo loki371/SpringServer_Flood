@@ -134,7 +134,7 @@ public class LocationRegistrationService {
             String authorityLocation = realAuthority.getWard().getId();
             String childRequestLocation = registration.getLocationId();
 
-            if (authorityLocation.equals(childRequestLocation)) {
+            if (authorityLocation.equals(childRequestLocation) || fatherUsername.equals("SuperAdmin")) {
                 if (!accepting) {
                     registration.setRejected(true);
                     authorityRegistrationRepository.save(registration);

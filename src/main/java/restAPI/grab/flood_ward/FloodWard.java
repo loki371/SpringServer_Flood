@@ -44,11 +44,11 @@ public class FloodWard {
             minDistance = Float.MAX_VALUE;
             target = null;
             for (FloodRescuer board : floodRescuers) {
-
+                System.out.println("board.rescuerId = " + board.rescuerId);
                 curDistance = L2Distance(registration.getLongitude(), registration.getLongitude(),
                         board.getLocation().getLongitude(), board.getLocation().getLatitude());
 
-                if (curDistance > minDistance) {
+                if (curDistance < minDistance) {
                     rescuerUsername = board.rescuerId;
                     minDistance = curDistance;
                     target = board;
@@ -126,9 +126,9 @@ public class FloodWard {
 
     public synchronized boolean stopRescuer(String rescuerUsername) {
         FloodRescuer floodRescuer = rescuerManager.getRescuer(rescuerUsername);
-        List<Registration> registrationList = floodRescuer.getFloodDestinations();
-        for (Registration item : registrationList) {
-            destinationManager.setNullRescuerToDestination(item.getId());
+        List<FloodRegistration> registrationList = floodRescuer.getFloodDestinations();
+        for (FloodRegistration item : registrationList) {
+            destinationManager.setNullRescuerToDestination(item.getRegistration().getId());
         }
         return true;
     }
