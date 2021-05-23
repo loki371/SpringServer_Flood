@@ -82,7 +82,7 @@ public class RegistrationController {
             case STATE_UNAUTHENTICATED:
                 break;
             default:
-                return ResponseEntity.badRequest().body(new SimplePayload("eState is not valid for volunteer, must be STATE_AUTHENTICATED or STATE_UNAUTHENTICATED"));
+                return ResponseEntity.badRequest().body(new SimplePayload("eState is not valid for authority, must be STATE_AUTHENTICATED or STATE_UNAUTHENTICATED"));
         }
 
         switch (newState) {
@@ -90,7 +90,7 @@ public class RegistrationController {
             case STATE_UNAUTHENTICATED:
                 break;
             default:
-                return ResponseEntity.badRequest().body(new SimplePayload("eState is not valid for volunteer, must be STATE_AUTHENTICATED or STATE_UNAUTHENTICATED"));
+                return ResponseEntity.badRequest().body(new SimplePayload("eState is not valid for authority, must be STATE_AUTHENTICATED or STATE_UNAUTHENTICATED"));
         }
 
         lastAction.setOldState(oldState);
@@ -110,8 +110,11 @@ public class RegistrationController {
 
         if (errorCode == ErrorCode.OK)
             return ResponseEntity.ok(new SimplePayload("updated"));
-        else
-            return ResponseEntity.badRequest().body(new SimplePayload(errorCode.toString()));    }
+        else {
+            System.out.println("errorCode = " + errorCode.toString());
+            return ResponseEntity.badRequest().body(new SimplePayload(errorCode.toString()));
+        }
+    }
 
     @PutMapping("/volunteers/{registrationId}")
     @PreAuthorize("hasRole('VOLUNTEER')")

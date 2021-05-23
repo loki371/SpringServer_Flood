@@ -7,6 +7,7 @@ import restAPI.models.location.Ward;
 import restAPI.models.locationRegistration.AuthorityLocationRegistration;
 import restAPI.models.locationRegistration.RescuerLocationRegistration;
 import restAPI.models.locationRegistration.VolunteerLocationRegistration;
+import restAPI.models.registration.EState;
 import restAPI.models.role.ERole;
 import restAPI.models.role.RoleAuthority;
 import restAPI.models.role.RoleRescuer;
@@ -136,13 +137,19 @@ public class LocationRegistrationService {
 
             if (authorityLocation.equals(childRequestLocation) || fatherUsername.equals("SuperAdmin")) {
                 if (!accepting) {
-                    registration.setRejected(true);
+                    registration.setState(EState.STATE_REJECT);
                     authorityRegistrationRepository.save(registration);
+
+                    RoleAuthority childAuthority = roleAuthorityRepository.findByUsername(childUsername).get();
+                    childAuthority.setFarther(null);
+                    childAuthority.setWard(null);
+                    roleAuthorityRepository.save(childAuthority);
 
                     System.out.println("name: " + childUsername + " accepting: false");
                 }
                 else {
-                    authorityRegistrationRepository.delete(registration);
+                    registration.setState(EState.STATE_AUTHENTICATED);
+                    authorityRegistrationRepository.save(registration);
 
                     RoleAuthority childAuthority = roleAuthorityRepository.findByUsername(childUsername).get();
                     childAuthority.setFarther(realAuthority);
