@@ -7,15 +7,12 @@ import restAPI.models.registration.EState;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 public class AuthorityLocationRegistration {
-    protected Long id;
-
     @Id
     protected String username;
 
@@ -23,14 +20,13 @@ public class AuthorityLocationRegistration {
 
     protected String locationId;
 
-    protected EState state;
+    protected EState estate;
 
     public AuthorityLocationRegistration(String username, String locationId, String locationType) {
-        this.id = UUID.nameUUIDFromBytes(username.getBytes()).getMostSignificantBits();
         this.username = username;
         this.locationId = locationId;
         this.locationType = locationType;
-        this.state = EState.STATE_UNAUTHENTICATED;
+        this.estate = EState.STATE_UNAUTHENTICATED;
     }
 }
 

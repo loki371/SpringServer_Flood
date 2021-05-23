@@ -162,7 +162,7 @@ public class LocationRegistrationController {
     }
 
     @GetMapping("/volunteers")
-    @PreAuthorize("hasRole('VOLUNTEER')")
+    @PreAuthorize("hasRole('AUTHORITY')")
     public ResponseEntity<?> getAllLocationRegistrationForVolunteer(Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
@@ -171,7 +171,7 @@ public class LocationRegistrationController {
     }
 
     @GetMapping("/rescuers")
-    @PreAuthorize("hasRole('RESCUER')")
+    @PreAuthorize("hasRole('AUTHORITY')")
     public ResponseEntity<?> getAllLocationRegistrationForRescuer(Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 

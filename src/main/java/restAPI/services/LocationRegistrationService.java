@@ -137,18 +137,20 @@ public class LocationRegistrationService {
 
             if (authorityLocation.equals(childRequestLocation) || fatherUsername.equals("SuperAdmin")) {
                 if (!accepting) {
-                    registration.setState(EState.STATE_REJECT);
+                    registration.setEstate(EState.STATE_REJECT);
                     authorityRegistrationRepository.save(registration);
 
                     RoleAuthority childAuthority = roleAuthorityRepository.findByUsername(childUsername).get();
-                    childAuthority.setFarther(null);
-                    childAuthority.setWard(null);
+                    if (childAuthority.getWard() != null && childAuthority.getWard().equals(childRequestLocation)) {
+                        childAuthority.setFarther(null);
+                        childAuthority.setWard(null);
+                    }
                     roleAuthorityRepository.save(childAuthority);
 
                     System.out.println("name: " + childUsername + " accepting: false");
                 }
                 else {
-                    registration.setState(EState.STATE_AUTHENTICATED);
+                    registration.setEstate(EState.STATE_AUTHENTICATED);
                     authorityRegistrationRepository.save(registration);
 
                     RoleAuthority childAuthority = roleAuthorityRepository.findByUsername(childUsername).get();
@@ -201,12 +203,18 @@ public class LocationRegistrationService {
             if (location.equals(childRequestLocation)) {
                 if (!accepting) {
 
-                    registration.setRejected(true);
+                    registration.setEstate(EState.STATE_REJECT);
                     rescuerRegistrationRepository.save(registration);
+
+                    RoleRescuer child = roleRescuerRepository.findByUsername(childUsername).get();
+                    if (child.getWard() != null && child.getWard().equals(childRequestLocation))
+                        child.setWard(null);
+                    roleRescuerRepository.save(child);
 
                     System.out.println("name: " + childUsername + " accepting: false");
                 } else {
-                    rescuerRegistrationRepository.delete(registration);
+                    registration.setEstate(EState.STATE_AUTHENTICATED);
+                    rescuerRegistrationRepository.save(registration);
 
                     RoleRescuer child = roleRescuerRepository.findByUsername(childUsername).get();
                     Ward ward = wardRepository.findById(registration.getLocationId()).get();
@@ -254,12 +262,18 @@ public class LocationRegistrationService {
             if (location.equals(childRequestLocation)) {
                 if (!accepting) {
 
-                    registration.setRejected(true);
+                    registration.setEstate(EState.STATE_REJECT);
                     volunteerRegistrationRepository.save(registration);
+
+                    RoleVolunteer child = roleVolunteerRepository.findByUsername(childUsername).get();
+                    if (child.getWard() != null && child.getWard().equals(childRequestLocation))
+                        child.setWard(null);
+                    roleVolunteerRepository.save(child);
 
                     System.out.println("name: " + childUsername + " accepting: false");
                 } else {
-                    volunteerRegistrationRepository.delete(registration);
+                    registration.setEstate(EState.STATE_AUTHENTICATED);
+                    volunteerRegistrationRepository.save(registration);
 
                     RoleVolunteer child = roleVolunteerRepository.findByUsername(childUsername).get();
                     Ward ward = wardRepository.findById(registration.getLocationId()).get();

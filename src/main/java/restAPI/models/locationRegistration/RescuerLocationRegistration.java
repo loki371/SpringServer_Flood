@@ -3,6 +3,7 @@ package restAPI.models.locationRegistration;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import restAPI.models.registration.EState;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -17,12 +18,12 @@ public class RescuerLocationRegistration {
 
     protected String locationId;
 
-    protected boolean isRejected;
+    protected EState estate;
 
     public RescuerLocationRegistration(String username, String locationId, String locationType) {
         this.username = username;
         this.locationId = locationId;
         this.locationType = locationType;
-        this.isRejected = false;
+        this.estate = EState.STATE_UNAUTHENTICATED;
     }
 }
