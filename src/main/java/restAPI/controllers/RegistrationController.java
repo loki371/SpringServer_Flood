@@ -116,7 +116,7 @@ public class RegistrationController {
         }
     }
 
-    @PutMapping("/volunteers/{registrationId}")
+    @PostMapping("/volunteers/{registrationId}")
     @PreAuthorize("hasRole('VOLUNTEER')")
     public ResponseEntity<?> confirmRegistration(@PathVariable Long registrationId, Authentication authentication,
                                                  @RequestParam("oldState") EState oldState,
