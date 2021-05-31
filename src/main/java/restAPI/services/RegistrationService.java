@@ -93,6 +93,7 @@ public class RegistrationService {
 
         registration.setPhone(request.getPhone());
         registration.setSavedBy(null);
+        registration.setNumPerson(request.getNumPerson());
 
         registrationRepository.save(registration);
 

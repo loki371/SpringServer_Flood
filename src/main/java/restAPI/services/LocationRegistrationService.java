@@ -48,6 +48,22 @@ public class LocationRegistrationService {
     @Autowired
     WardRepository wardRepository;
 
+    public Object getMyRegistration(ERole role, String username) {
+        switch (role) {
+            case ROLE_AUTHORITY:
+                return authorityRegistrationRepository.findByUsername(username).orElse(null);
+
+            case ROLE_RESCUER:
+                return rescuerRegistrationRepository.findByUsername(username).orElse(null);
+
+            case ROLE_VOLUNTEER:
+                return volunteerRegistrationRepository.findByUsername(username).orElse(null);
+
+            default:
+                return null;
+        }
+    }
+
     public boolean addRegistrationToLocation(String username, String locationId, String locationType, ERole eRole) {
         switch (eRole) {
             case ROLE_AUTHORITY:

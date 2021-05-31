@@ -6,6 +6,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import restAPI.Constants;
+import restAPI.models.locationRegistration.AuthorityLocationRegistration;
+import restAPI.models.locationRegistration.RescuerLocationRegistration;
+import restAPI.models.locationRegistration.VolunteerLocationRegistration;
 import restAPI.models.role.ERole;
 import restAPI.payload.SimplePayload;
 import restAPI.repository.location.DistrictRepository;
@@ -150,6 +153,39 @@ public class LocationRegistrationController {
                     new SimplePayload("registration do not exists!"));
 
         return ResponseEntity.ok().body(new SimplePayload("deleted!"));
+    }
+
+    @GetMapping("/myRegistration/authority")
+    @PreAuthorize("hasRole('AUTHORITY')")
+    public ResponseEntity<?> getMyRegistration1(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        AuthorityLocationRegistration item = (AuthorityLocationRegistration)
+                locationRegistrationService.getMyRegistration(ERole.ROLE_AUTHORITY, userDetails.getUsername());
+
+        return ResponseEntity.ok().body(new SimplePayload(item));
+    }
+
+    @GetMapping("/myRegistration/rescuer")
+    @PreAuthorize("hasRole('RESCUER')")
+    public ResponseEntity<?> getMyRegistration2(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        RescuerLocationRegistration item = (RescuerLocationRegistration)
+                locationRegistrationService.getMyRegistration(ERole.ROLE_RESCUER, userDetails.getUsername());
+
+        return ResponseEntity.ok().body(new SimplePayload(item));
+    }
+
+    @GetMapping("/myRegistration/volunteer")
+    @PreAuthorize("hasRole('VOLUNTEER')")
+    public ResponseEntity<?> getMyRegistration3(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        VolunteerLocationRegistration item = (VolunteerLocationRegistration)
+                locationRegistrationService.getMyRegistration(ERole.ROLE_VOLUNTEER, userDetails.getUsername());
+
+        return ResponseEntity.ok().body(new SimplePayload(item));
     }
 
     @GetMapping("/authorities")
