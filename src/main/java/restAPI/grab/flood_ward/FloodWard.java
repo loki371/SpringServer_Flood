@@ -58,6 +58,9 @@ public class FloodWard {
             item.setRescuerUsername(rescuerUsername);
 
             FloodRescuer floodRescuer = rescuerManager.getRescuer(rescuerUsername);
+            if (floodRescuer == null) {
+                continue;
+            }
             floodRescuer.addToListRegis(item);
 
             if (floodRescuer.getFloodDestinations().size() > FloodRescuer.MAX_REGISTRATION)
