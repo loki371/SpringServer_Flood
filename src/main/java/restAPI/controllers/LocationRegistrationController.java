@@ -101,10 +101,10 @@ public class LocationRegistrationController {
     }
 
     @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
-    @PostMapping("/wards/{wardId}")
+    @PostMapping("/wardsCorsCors")
     @PreAuthorize("hasRole('AUTHORITY') or hasRole('VOLUNTEER') or hasRole('RESCUER')")
     public ResponseEntity<?> createNewWardRegistration(
-            @PathVariable String wardId,
+            @RequestParam("wardId") String wardId,
             @RequestParam("eRole") ERole eRole,
             Authentication authentication
     ) {
@@ -131,10 +131,10 @@ public class LocationRegistrationController {
     }
 
     @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
-    @DeleteMapping("/wards/{wardId}")
+    @DeleteMapping("/wardsCorsCors")
     @PreAuthorize("hasRole('AUTHORITY') or hasRole('VOLUNTEER') or hasRole('RESCUER')")
     public ResponseEntity<?> deleteWardRegistration(
-            @PathVariable String wardId,
+            @RequestParam("ward") String wardId,
             @RequestParam("eRole") ERole eRole,
             Authentication authentication
     ) {
