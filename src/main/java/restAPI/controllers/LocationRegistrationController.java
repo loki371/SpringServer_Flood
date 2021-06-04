@@ -40,6 +40,7 @@ public class LocationRegistrationController {
     @Autowired
     LocationRegistrationService locationRegistrationService;
 
+    @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
     @PostMapping("/provinces/{provinceId}")
     @PreAuthorize("hasRole('AUTHORITY') or hasRole('VOLUNTEER') or hasRole('RESCUER')")
     public ResponseEntity<?> createNewProvinceRegistration(
@@ -69,6 +70,7 @@ public class LocationRegistrationController {
         return ResponseEntity.ok().body(new SimplePayload("created!"));
     }
 
+    @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
     @PostMapping("/districts/{districtId}")
     @PreAuthorize("hasRole('AUTHORITY') or hasRole('VOLUNTEER') or hasRole('RESCUER')")
     public ResponseEntity<?> createNewDistrictRegistration(
@@ -98,6 +100,7 @@ public class LocationRegistrationController {
         return ResponseEntity.ok().body(new SimplePayload("created!"));
     }
 
+    @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
     @PostMapping("/wards/{wardId}")
     @PreAuthorize("hasRole('AUTHORITY') or hasRole('VOLUNTEER') or hasRole('RESCUER')")
     public ResponseEntity<?> createNewWardRegistration(
@@ -127,6 +130,7 @@ public class LocationRegistrationController {
         return ResponseEntity.ok().body(new SimplePayload("created!"));
     }
 
+    @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
     @DeleteMapping("/wards/{wardId}")
     @PreAuthorize("hasRole('AUTHORITY') or hasRole('VOLUNTEER') or hasRole('RESCUER')")
     public ResponseEntity<?> deleteWardRegistration(
