@@ -71,7 +71,7 @@ public class AccountController {
                 );
     }
 
-    @PutMapping("/{username}")
+    @PostMapping("/{username}")
     @PreAuthorize("(#username == authentication.getName()) or hasRole('ADMIN')")
     public ResponseEntity<?> updateAccount(@PathVariable("username") String username, @Valid @RequestBody SignupPayload request) {
         Optional<UserInfo> userInfo = userRepository.findByUsername(username);
