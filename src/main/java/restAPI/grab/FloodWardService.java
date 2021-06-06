@@ -10,6 +10,10 @@ import restAPI.models.location.Ward;
 import restAPI.models.registration.Registration;
 import restAPI.models.role.RoleRescuer;
 import restAPI.repository.registration.RegistrationRepository;
+import restAPI.services.FloodNotificationService;
+import restAPI.services.RegistrationService;
+
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,10 +23,26 @@ public class FloodWardService {
     @Autowired
     RegistrationRepository registrationRepository;
 
+    @Autowired
+    FloodNotificationService floodNotificationService;
+
+    @Autowired
+    RegistrationService registrationService;
+
     private Map<String, FloodWard> floodingWardMap = new ConcurrentHashMap<>();
 
+    @PostConstruct
+    public void postConstruct() {
+        List<String> listWardIdInFlood = floodNotificationService.getListWardInFlood();
+
+        for (String wardId : listWardIdInFlood) {
+            List<Registration> registrations = registrationService.changeNotifyFloodRegistrationAndGetAllRegistrations(wardId);
+            createFloodingLocation(wardId, registrations);
+        }
+    }
+
     public boolean createFloodingLocation(String wardId, List<Registration> registrationList) {
-        System.out.println("create Flooding Location: regisList.size = " + registrationList.size());
+        System.out.println("create Flooding Location: ward " + wardId + " regisList.size = " + registrationList.size());
         if (floodingWardMap.containsKey(wardId))
             return false;
 
