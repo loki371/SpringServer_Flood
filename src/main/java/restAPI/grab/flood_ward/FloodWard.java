@@ -104,8 +104,8 @@ public class FloodWard {
         registrationRepository.save(registration);
 
         floodRescuer.removeRegis(regisId);
-
         destinationManager.remove(regisId);
+
 
         return true;
     }
@@ -143,9 +143,13 @@ public class FloodWard {
     }
 
     public synchronized boolean stopRescuer(String rescuerUsername) {
+        System.out.println("Stop Rescuer: " + rescuerUsername);
         FloodRescuer floodRescuer = rescuerManager.getRescuer(rescuerUsername);
         List<FloodRegistration> registrationList = floodRescuer.getFloodDestinations();
         for (FloodRegistration item : registrationList) {
+            System.out.println(" - idRegis = " + item.getRegistration().getId() + " rescuerId " + item.getRescuerUsername()
+                + " distanceToRescuer = " + item.getDistance2Rescuer());
+
             item.setRescuerUsername(null);
             item.setDistance2Rescuer(0);
         }
