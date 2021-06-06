@@ -86,7 +86,8 @@ public class FloodRescuer {
     public synchronized void removeAllRegis() {
         for (FloodRegistration item : floodDestinations) {
             item.setRescuerUsername(null);
-            floodDestinations.remove(item);
+            item.setDistance2Rescuer(0);
         }
+        floodDestinations.clear();
     }
 }

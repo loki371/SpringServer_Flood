@@ -72,7 +72,8 @@ public class FloodWard {
                     item.setDistance2Rescuer(curDistance);
 
                     regisForRescuer.add(item);
-                    System.out.println("    -> size == maxSize: remove top and add");
+                    System.out.println("    -> size == maxSize: remove top("+regisPeek.getDistance2Rescuer()
+                            +") and add("+item.getDistance2Rescuer()+")");
 
                 } else {
                     System.out.println("    -> cannot add because distance is not small enough");

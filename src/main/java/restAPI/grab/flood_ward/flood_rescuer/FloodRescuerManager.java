@@ -8,7 +8,7 @@ import restAPI.models.registration.Registration;
 import java.util.*;
 
 public class FloodRescuerManager {
-    public static final int SIZE_REGIS_PER_RESCUER = 10;
+    public static final int SIZE_REGIS_PER_RESCUER = 4;
 
     private Map<String, FloodRescuer> rescuerMap = new HashMap<>();
 
