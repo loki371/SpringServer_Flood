@@ -79,11 +79,23 @@ public class FloodRescuer {
     }
 
     public synchronized void removeRegis(long regisId) {
-        floodDestinations.remove(regisId);
+        for (FloodRegistration item : floodDestinations) {
+            if (item.getRegistration().getId() == regisId) {
+                item.setRescuerUsername(null);
+                floodDestinations.remove(item);
+            }
+        }
     }
 
     public synchronized void setLocation(Location location) {
         this.longitude = location.getLongitude();
         this.latitude = location.getLatitude();
+    }
+
+    public synchronized void removeAllRegis() {
+        for (FloodRegistration item : floodDestinations) {
+            item.setRescuerUsername(null);
+            floodDestinations.remove(item);
+        }
     }
 }

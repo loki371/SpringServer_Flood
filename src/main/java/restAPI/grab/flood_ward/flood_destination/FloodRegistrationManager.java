@@ -4,6 +4,7 @@ import restAPI.grab.FloodWardService;
 import restAPI.grab.flood_ward.FloodWard;
 import restAPI.grab.flood_ward.entity.FloodRegistration;
 import restAPI.grab.flood_ward.entity.FloodRescuer;
+import restAPI.models.registration.EState;
 import restAPI.models.registration.Registration;
 
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ public class FloodRegistrationManager {
     public FloodRegistrationManager(List<Registration> registrations) {
         this.floodRegistrationMap = new HashMap<>();
         for (Registration registration : registrations) {
+            if (registration.getEState() != EState.STATE_EMERGENCY)
+                continue;
             FloodRegistration floodRegistration = new FloodRegistration(registration, null);
             this.floodRegistrationMap.put(registration.getId(), floodRegistration);
         }
@@ -26,29 +29,12 @@ public class FloodRegistrationManager {
         return new ArrayList<>(this.floodRegistrationMap.values());
     }
 
-    public List<FloodRegistration> getRegistrationsOfRescuer(String rescuerUsername) {
-        System.out.println("FloodRegistrationManager.getRegistrationsOfRescuer");
-        List<FloodRegistration> result = new ArrayList<>();
-        for (FloodRegistration item : floodRegistrationMap.values()) {
-            if (item.getRescuerUsername().equals(rescuerUsername)
-                || item.getRescuerUsername() == null) {
-                result.add(item);
-            }
-        }
-        return result;
-    }
-
     public FloodRegistration getRegistration(long regisId) {
         return floodRegistrationMap.get(regisId);
     }
 
     public void remove(long regisId) {
         floodRegistrationMap.remove(regisId);
-    }
-
-    public void setNullRescuerToDestination(long regisId) {
-        FloodRegistration floodRegistration = floodRegistrationMap.get(regisId);
-        floodRegistration.setRescuerUsername(null);
     }
 
     public void addRegistration(Registration registration) {

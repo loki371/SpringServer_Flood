@@ -64,9 +64,11 @@ public class FloodWardService {
             return null;
         }
 
-        floodWard.updateDestinationForRescuers();
+        floodRescuer.removeAllRegis();
 
-        return floodWard.getDestinationForRescuer(rescuerUsername);
+        floodWard.updateDestinationForRescuers(floodRescuer);
+
+        return floodRescuer.getFloodDestinations();
     }
 
     public boolean checkInFlood(String wardId) {

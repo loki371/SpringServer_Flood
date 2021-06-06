@@ -9,73 +9,87 @@ import restAPI.models.registration.EState;
 import restAPI.models.registration.Registration;
 import restAPI.models.role.RoleRescuer;
 import restAPI.repository.registration.RegistrationRepository;
-import restAPI.services.RegistrationService;
-
 import java.util.List;
+import java.util.PriorityQueue;
 
 public class FloodWard {
     public final String wardId;
-    private FloodRescuerManager rescuerManager;
-    private FloodRegistrationManager destinationManager;
+    private final FloodRescuerManager rescuerManager;
+    private final FloodRegistrationManager destinationManager;
 
     public FloodWard(String wardId, List<Registration> registrationList) {
         this.wardId = wardId;
         rescuerManager = new FloodRescuerManager();
         destinationManager = new FloodRegistrationManager(registrationList);
+
         System.out.println("FloodWard: constructor: wardId = " + wardId + " destinationSize = " + registrationList.size());
     }
 
-    public synchronized void updateDestinationForRescuers(){
+    public synchronized void updateDestinationForRescuers(FloodRescuer floodRescuer){
         System.out.println("FloodWard.updateDestinationForRescuers");
 
-        List<FloodRescuer> floodRescuers = rescuerManager.getListRescuers();
         List<FloodRegistration> floodRegistrations = destinationManager.getListRegistration();
 
-        String rescuerUsername;
-        float minDistance, curDistance;
-        FloodRescuer target;
+        PriorityQueue<FloodRegistration> regisForRescuer = new PriorityQueue<>(
+                FloodRescuerManager.SIZE_REGIS_PER_RESCUER,
+                new DistanceComperator());
+
+        System.out.println("Flood RegistrationList = " + floodRegistrations.size());
+
+        float curDistance;
         for (FloodRegistration item : floodRegistrations) {
+
+            if (item.getRescuerUsername() != null)
+                continue;
 
             Registration registration = item.getRegistration();
             if (registration.getLatitude() == -1 || registration.getLongitude() == -1)
                 continue;
 
-            rescuerUsername = "";
-            minDistance = Float.MAX_VALUE;
-            target = null;
-            for (FloodRescuer board : floodRescuers) {
-                System.out.println("board.rescuerId = " + board.rescuerId);
-                curDistance = L2Distance(registration.getLongitude(), registration.getLongitude(),
-                        board.getLocation().getLongitude(), board.getLocation().getLatitude());
+            curDistance = L2Distance(registration.getLongitude(), registration.getLongitude(),
+                    floodRescuer.getLocation().getLongitude(), floodRescuer.getLocation().getLatitude());
 
-                if (curDistance < minDistance) {
-                    rescuerUsername = board.rescuerId;
-                    minDistance = curDistance;
-                    target = board;
+            System.out.println(" - Registration name " + registration.getName() + " eState = " + registration.getEState()
+                + " distance = " + curDistance);
+
+            if (regisForRescuer.size() < FloodRescuerManager.SIZE_REGIS_PER_RESCUER) {
+
+                item.setRescuerUsername(floodRescuer.rescuerId);
+                item.setDistance2Rescuer(curDistance);
+
+                regisForRescuer.add(item);
+                System.out.println("   -> size < maxSize : add to queue");
+
+            } else {
+                FloodRegistration regisPeek = regisForRescuer.peek();
+
+                if (regisPeek.getDistance2Rescuer() > curDistance) {
+
+                    regisPeek.setRescuerUsername(null);
+                    regisPeek.setDistance2Rescuer(0);
+
+                    item.setRescuerUsername(floodRescuer.rescuerId);
+                    item.setDistance2Rescuer(curDistance);
+
+                    regisForRescuer.add(item);
+                    System.out.println("    -> size == maxSize: remove top and add");
+
+                } else {
+                    System.out.println("    -> cannot add because distance is not small enough");
                 }
             }
-
-            item.setRescuerUsername(rescuerUsername);
-
-            FloodRescuer floodRescuer = rescuerManager.getRescuer(rescuerUsername);
-            if (floodRescuer == null) {
-                continue;
-            }
-            floodRescuer.addToListRegis(item);
-
-            if (floodRescuer.getFloodDestinations().size() > FloodRescuer.MAX_REGISTRATION)
-                floodRescuers.remove(target);
         }
 
+        System.out.println("Size Queue after all : " + regisForRescuer.size());
+        for (FloodRegistration item : regisForRescuer) {
+            System.out.println("adding item : " + item.getRegistration().getId()
+                    + " sizeToRescuer " + item.getDistance2Rescuer());
+            floodRescuer.addToListRegis(item);
+        }
     }
 
     public synchronized void addRescuerToFloodWard(RoleRescuer rescuer, Location location, int boardSize) {
         rescuerManager.createNewRescuerInMgr(rescuer.getUsername(), boardSize, location);
-    }
-
-    public synchronized List<FloodRegistration> getDestinationForRescuer(String rescuerId) {
-        System.out.println("FloodWard.getDestinationForRescuer");
-        return destinationManager.getRegistrationsOfRescuer(rescuerId);
     }
 
     public synchronized boolean saveDestination(String rescuerId, long regisId, RegistrationRepository registrationRepository) {
@@ -131,7 +145,8 @@ public class FloodWard {
         FloodRescuer floodRescuer = rescuerManager.getRescuer(rescuerUsername);
         List<FloodRegistration> registrationList = floodRescuer.getFloodDestinations();
         for (FloodRegistration item : registrationList) {
-            destinationManager.setNullRescuerToDestination(item.getRegistration().getId());
+            item.setRescuerUsername(null);
+            item.setDistance2Rescuer(0);
         }
         return true;
     }

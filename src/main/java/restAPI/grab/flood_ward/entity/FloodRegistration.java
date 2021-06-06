@@ -8,6 +8,7 @@ import restAPI.models.registration.Registration;
 public class FloodRegistration {
     private Registration registration;
     private String rescuerUsername;
+    private float distance2Rescuer;
 
     public FloodRegistration(Registration registration, String rescuerUsername) {
         this.registration = registration;
