@@ -65,6 +65,9 @@ public class FloodWard {
 
                 if (regisPeek.getDistance2Rescuer() > curDistance) {
 
+                    item.setRescuerUsername(floodRescuer.rescuerId);
+                    item.setDistance2Rescuer(curDistance);
+
                     System.out.println("    -> size == maxSize: remove top("+regisPeek.getDistance2Rescuer()
                             +") and add("+item.getDistance2Rescuer()+")");
 
@@ -72,10 +75,6 @@ public class FloodWard {
                     regisPeek.setDistance2Rescuer(0);
 
                     regisForRescuer.poll();
-
-                    item.setRescuerUsername(floodRescuer.rescuerId);
-                    item.setDistance2Rescuer(curDistance);
-
                     regisForRescuer.add(item);
 
                 } else {
