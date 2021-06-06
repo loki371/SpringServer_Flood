@@ -48,17 +48,8 @@ public class FloodRescuer {
         return true;
     }
 
-    public synchronized void changeLocation(float longitude, float latitude) {
-        this.longitude = longitude;
-        this.latitude = latitude;
-    }
-
     public synchronized Location getLocation() {
         return new Location(longitude, latitude);
-    }
-
-    public synchronized void setFloodDestinations(List<FloodRegistration> newDestinations) {
-        this.floodDestinations = newDestinations;
     }
 
     public synchronized List<FloodRegistration> getFloodDestinations() {

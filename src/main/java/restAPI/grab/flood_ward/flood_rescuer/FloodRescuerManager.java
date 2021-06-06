@@ -25,8 +25,6 @@ public class FloodRescuerManager {
                 maxNumberOnBoard,
                 location.getLongitude(), location.getLatitude());
 
-        rescuer.setFloodDestinations(null);
-
         rescuerMap.put(rescuerId, rescuer);
 
         return rescuer;
