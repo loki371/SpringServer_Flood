@@ -12,6 +12,7 @@ import restAPI.models.role.ERole;
 import restAPI.models.role.RoleAuthority;
 import restAPI.models.role.RoleRescuer;
 import restAPI.models.role.RoleVolunteer;
+import restAPI.repository.UserRepository;
 import restAPI.repository.location.WardRepository;
 import restAPI.repository.locationRegistration.AuthorityRegistrationRepository;
 import restAPI.repository.locationRegistration.RescuerRegistrationRepository;
@@ -47,6 +48,9 @@ public class LocationRegistrationService {
 
     @Autowired
     WardRepository wardRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     public Object getMyRegistration(ERole role, String username) {
         switch (role) {
@@ -115,17 +119,21 @@ public class LocationRegistrationService {
         switch (eRole) {
             case ROLE_AUTHORITY:
                 List<AuthorityLocationRegistration> list1 = authorityRegistrationRepository.findAllByLocationId(ward.getId());
-                result.addAll(list1);
+                for (AuthorityLocationRegistration item : list1) {
+                    result.add(userRepository.findByUsername(item.getUsername()).get());
+                }
                 break;
 
             case ROLE_RESCUER:
                 List<RescuerLocationRegistration> list2 = rescuerRegistrationRepository.findAllByLocationId(ward.getId());
-                result.addAll(list2);
+                for (RescuerLocationRegistration item : list2)
+                    result.add(userRepository.findByUsername(item.getUsername()).get());
                 break;
 
             case ROLE_VOLUNTEER:
                 List<VolunteerLocationRegistration> list3 = volunteerRegistrationRepository.findAllByLocationId(ward.getId());
-                result.addAll(list3);
+                for (VolunteerLocationRegistration item : list3)
+                    result.add(userRepository.findByUsername(item.getUsername()).get());
                 break;
         }
         return result;
