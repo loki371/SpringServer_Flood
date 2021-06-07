@@ -24,7 +24,7 @@ public class FloodRescuer {
         this.latitude = latitude;
         this.longitude = longitude;
         this.maximumChair = maximumChair;
-        this.floodDestinations = new LinkedList<>();
+        this.floodDestinations = new ArrayList<>();
     }
 
     public synchronized boolean increaseNumPeopleOnBoard(int d) {
@@ -53,12 +53,12 @@ public class FloodRescuer {
     }
 
     public synchronized List<FloodRegistration> getFloodDestinations() {
-        return new LinkedList<>(this.floodDestinations);
+        return new ArrayList<>(this.floodDestinations);
     }
 
     public synchronized void addToListRegis(FloodRegistration item) {
         if (floodDestinations == null)
-            floodDestinations = new LinkedList<>();
+            floodDestinations = new ArrayList<>();
         floodDestinations.add(item);
     }
 
