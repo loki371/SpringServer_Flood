@@ -68,9 +68,10 @@ public class FloodNotificationController {
             return ResponseEntity.notFound().build();
 
         boolean result = floodNotificationService.checkThenRemoveWardIdToFlood(wardId);
-        if (!result)
+        if (!result) {
+            floodWardService.removeFloodWard(wardId);
             return ResponseEntity.badRequest().body(new SimplePayload("object is not in FloodLocationList!", wardId));
-
+        }
         return ResponseEntity.ok().body(new SimplePayload("ok", wardId));
     }
 }

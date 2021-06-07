@@ -43,14 +43,20 @@ public class FloodWardService {
 
     public boolean createFloodingLocation(String wardId, List<Registration> registrationList) {
         System.out.println("create Flooding Location: ward " + wardId + " regisList.size = " + registrationList.size());
-        if (floodingWardMap.containsKey(wardId))
+        if (floodingWardMap.containsKey(wardId)) {
+            System.out.println("map contain wardId in Flood -> return false");
             return false;
+        }
 
         FloodWard floodWard = new FloodWard(wardId, registrationList);
 
         floodingWardMap.put(wardId, floodWard);
 
         return true;
+    }
+
+    public void removeFloodWard(String wardId) {
+        floodingWardMap.remove(wardId);
     }
 
     public List<FloodRegistration> getFloodRegistrationOfRescuer(String wardId, String rescuerUsername) {
