@@ -93,7 +93,7 @@ public class FloodController {
         return ResponseEntity.ok().body(new SimplePayload("ok"));
     }
 
-    @PostMapping("/saveDestinations/{registration_id}")
+    @PostMapping("/saveDestinations/{regisId}")
     @PreAuthorize("hasRole('RESCUER')")
     public ResponseEntity<?> saveDestination(Authentication authentication,
                                              @PathVariable Long regisId,
