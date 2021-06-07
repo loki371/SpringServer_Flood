@@ -3,6 +3,8 @@ package restAPI.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restAPI.Constants;
+import restAPI.buckets.DangKyQuyen;
+import restAPI.models.UserInfo;
 import restAPI.models.location.Ward;
 import restAPI.models.locationRegistration.AuthorityLocationRegistration;
 import restAPI.models.locationRegistration.RescuerLocationRegistration;
@@ -120,20 +122,49 @@ public class LocationRegistrationService {
             case ROLE_AUTHORITY:
                 List<AuthorityLocationRegistration> list1 = authorityRegistrationRepository.findAllByLocationId(ward.getId());
                 for (AuthorityLocationRegistration item : list1) {
-                    result.add(userRepository.findByUsername(item.getUsername()).get());
+                    UserInfo userInfo = userRepository.findByUsername(item.getUsername()).get();
+
+                    DangKyQuyen dkq = new DangKyQuyen();
+
+                    dkq.username = item.getUsername();
+                    dkq.email = userInfo.getEmail();
+                    dkq.phone = userInfo.getPhone();
+                    dkq.estate = item.getEstate();
+
+                    result.add(dkq);
                 }
                 break;
 
             case ROLE_RESCUER:
                 List<RescuerLocationRegistration> list2 = rescuerRegistrationRepository.findAllByLocationId(ward.getId());
-                for (RescuerLocationRegistration item : list2)
-                    result.add(userRepository.findByUsername(item.getUsername()).get());
+                for (RescuerLocationRegistration item : list2) {
+                    UserInfo userInfo = userRepository.findByUsername(item.getUsername()).get();
+
+                    DangKyQuyen dkq = new DangKyQuyen();
+
+                    dkq.username = item.getUsername();
+                    dkq.email = userInfo.getEmail();
+                    dkq.phone = userInfo.getPhone();
+                    dkq.estate = item.getEstate();
+
+                    result.add(dkq);
+                }
                 break;
 
             case ROLE_VOLUNTEER:
                 List<VolunteerLocationRegistration> list3 = volunteerRegistrationRepository.findAllByLocationId(ward.getId());
-                for (VolunteerLocationRegistration item : list3)
-                    result.add(userRepository.findByUsername(item.getUsername()).get());
+                for (VolunteerLocationRegistration item : list3) {
+                    UserInfo userInfo = userRepository.findByUsername(item.getUsername()).get();
+
+                    DangKyQuyen dkq = new DangKyQuyen();
+
+                    dkq.username = item.getUsername();
+                    dkq.email = userInfo.getEmail();
+                    dkq.phone = userInfo.getPhone();
+                    dkq.estate = item.getEstate();
+
+                    result.add(dkq);
+                }
                 break;
         }
         return result;
