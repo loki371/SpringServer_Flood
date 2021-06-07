@@ -70,8 +70,10 @@ public class FloodRescuer {
     }
 
     public synchronized void removeRegis(long regisId) {
-        System.out.println(" - rescuer floodDesitinations = " + floodDestinations);
         for (FloodRegistration item : floodDestinations) {
+            if (item == null)
+                return;
+
             if (item.getRegistration().getId() == regisId) {
                 item.setRescuerUsername(null);
                 floodDestinations.remove(item);
