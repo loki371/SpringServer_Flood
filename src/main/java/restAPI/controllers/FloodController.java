@@ -114,7 +114,7 @@ public class FloodController {
         if (!floodWardService.checkContainValidRegis(ward.getId(), regisId))
             return ResponseEntity.badRequest().body(new SimplePayload("this flood ward do not contain this regisId"));
 
-        boolean result = floodWardService.saveDestination(userDetails.getUsername(), ward.getId(), regisId);
+        boolean result = floodWardService.saveDestination(userDetails.getUsername(), ward.getId(), regisId, numPeople);
 
         if (!result)
             return ResponseEntity.badRequest().body(new SimplePayload("this rescuer do not contain regis or num people in rescuer's board is maximum"));

@@ -99,13 +99,13 @@ public class FloodWardService {
         return floodWard.checkContainValidRegis(regisId);
     }
 
-    public boolean saveDestination(String rescuerUsername, String wardId, long regisId) {
+    public boolean saveDestination(String rescuerUsername, String wardId, long regisId, int numPeople) {
         FloodWard floodWard = floodingWardMap.get(wardId);
 
         if (!floodWard.isRescuerContainRegistration(rescuerUsername, regisId))
             return false;
 
-        return floodWard.saveDestination(rescuerUsername, regisId, registrationRepository);
+        return floodWard.saveDestination(rescuerUsername, regisId, registrationRepository, numPeople);
     }
 
     public boolean peopleGetOutFromRescuerBoard(String wardId, String rescuerUsername, int numPeople) {

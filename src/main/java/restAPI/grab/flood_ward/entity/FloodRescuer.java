@@ -30,8 +30,8 @@ public class FloodRescuer {
     public synchronized boolean increaseNumPeopleOnBoard(int d) {
         int sum = numPeopleOnBoard + d;
 
-        if (sum > maximumChair)
-            return false;
+//        if (sum > maximumChair)
+//            return false;
 
         numPeopleOnBoard = sum;
         return true;
@@ -70,10 +70,12 @@ public class FloodRescuer {
     }
 
     public synchronized void removeRegis(long regisId) {
+        System.out.println(" - rescuer floodDesitinations = " + floodDestinations);
         for (FloodRegistration item : floodDestinations) {
             if (item.getRegistration().getId() == regisId) {
                 item.setRescuerUsername(null);
                 floodDestinations.remove(item);
+                System.out.println("- rescuer removeItem : regisId = " + item.getRegistration().getId());
             }
         }
     }

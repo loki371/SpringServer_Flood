@@ -37,6 +37,7 @@ public class FloodRegistrationManager {
 
     public void remove(long regisId) {
         floodRegistrationMap.remove(regisId);
+        System.out.println("- destinationMgr remove regisId = " + regisId);
     }
 
     public void addRegistration(Registration registration) {

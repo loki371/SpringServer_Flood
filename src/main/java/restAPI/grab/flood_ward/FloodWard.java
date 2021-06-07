@@ -95,19 +95,33 @@ public class FloodWard {
         rescuerManager.createNewRescuerInMgr(rescuer.getUsername(), boardSize, location);
     }
 
-    public synchronized boolean saveDestination(String rescuerId, long regisId, RegistrationRepository registrationRepository) {
+    public synchronized boolean saveDestination(String rescuerId, long regisId, RegistrationRepository registrationRepository,
+                                                int numPeople) {
         FloodRescuer floodRescuer = rescuerManager.getRescuer(rescuerId);
+
         Registration registration = registrationRepository.findById(regisId).get();
 
         if (!floodRescuer.increaseNumPeopleOnBoard(registration.getNumPerson()))
             return false;
 
-        registration.setEState(EState.STATE_SAVED);
-        registrationRepository.save(registration);
+        if (registration.getNumPerson() <= numPeople) {
+            System.out.println("saving: regis.getNumPerson <= saving.numPeople -> saveAll");
+            registration.setEState(EState.STATE_SAVED);
+            registrationRepository.save(registration);
 
-        floodRescuer.removeRegis(regisId);
-        destinationManager.remove(regisId);
+            floodRescuer.removeRegis(regisId);
+            destinationManager.remove(regisId);
 
+        } else {
+            int remainPeople = registration.getNumPerson()-numPeople;
+            registration.setNumPerson(remainPeople);
+            registrationRepository.save(registration);
+
+            System.out.println("saving: regis.getNumPerson > saving.numPeople -> remove numPeople a part = " + numPeople);
+
+            FloodRegistration floodRegistration = destinationManager.getRegistration(regisId);
+            floodRegistration.getRegistration().setNumPerson(remainPeople);
+        }
 
         return true;
     }
