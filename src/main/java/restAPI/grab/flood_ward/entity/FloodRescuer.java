@@ -24,7 +24,7 @@ public class FloodRescuer {
         this.latitude = latitude;
         this.longitude = longitude;
         this.maximumChair = maximumChair;
-        this.floodDestinations = new ArrayList<>();
+        this.floodDestinations = new LinkedList<>();
     }
 
     public synchronized boolean increaseNumPeopleOnBoard(int d) {
@@ -53,12 +53,12 @@ public class FloodRescuer {
     }
 
     public synchronized List<FloodRegistration> getFloodDestinations() {
-        return new ArrayList<>(this.floodDestinations);
+        return new LinkedList<>(this.floodDestinations);
     }
 
     public synchronized void addToListRegis(FloodRegistration item) {
         if (floodDestinations == null)
-            floodDestinations = new ArrayList<>();
+            floodDestinations = new LinkedList<>();
         floodDestinations.add(item);
     }
 
@@ -70,13 +70,15 @@ public class FloodRescuer {
     }
 
     public synchronized void removeRegis(long regisId) {
-        for (FloodRegistration item : floodDestinations) {
+        for (Iterator<FloodRegistration> iterator = floodDestinations.iterator(); iterator.hasNext();) {
+            FloodRegistration item = iterator.next();
+
             if (item == null)
                 return;
 
             if (item.getRegistration().getId() == regisId) {
                 item.setRescuerUsername(null);
-                floodDestinations.remove(item);
+                iterator.remove();
                 System.out.println("- rescuer removeItem : regisId = " + item.getRegistration().getId());
             }
         }
