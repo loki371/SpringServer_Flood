@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 public class FloodRegistrationManager {
-    private Map<Long, FloodRegistration> floodRegistrationMap;
+    private final Map<Long, FloodRegistration> floodRegistrationMap;
 
     public FloodRegistrationManager(List<Registration> registrations) {
         this.floodRegistrationMap = new HashMap<>();
         for (Registration registration : registrations) {
-            if (registration.getEState() != EState.STATE_EMERGENCY)
+            if (registration.getEState() != EState.STATE_EMERGENCY && registration.getEState() != EState.STATE_DANGER)
                 continue;
             System.out.println("    -> create item in flood area: " + registration.getName());
             FloodRegistration floodRegistration = new FloodRegistration(registration, null);
