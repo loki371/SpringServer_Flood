@@ -20,9 +20,11 @@ public class FloodRegistrationManager {
         for (Registration registration : registrations) {
             if (registration.getEState() != EState.STATE_EMERGENCY)
                 continue;
+            System.out.println("    -> create item in flood area: " + registration.getName());
             FloodRegistration floodRegistration = new FloodRegistration(registration, null);
             this.floodRegistrationMap.put(registration.getId(), floodRegistration);
         }
+        System.out.println("after create Destination, size = " + floodRegistrationMap.values().size());
     }
 
     public List<FloodRegistration> getListRegistration() {
