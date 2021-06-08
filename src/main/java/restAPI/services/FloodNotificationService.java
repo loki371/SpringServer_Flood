@@ -3,7 +3,11 @@ package restAPI.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restAPI.models.floodNotifications.FloodLocation;
+import restAPI.models.location.Ward;
+import restAPI.models.registration.EState;
+import restAPI.models.registration.Registration;
 import restAPI.repository.floodNotifications.FloodLocationRepository;
+import restAPI.repository.registration.RegistrationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +18,9 @@ public class FloodNotificationService {
 
     @Autowired
     FloodLocationRepository floodLocationRepository;
+
+    @Autowired
+    RegistrationRepository registrationRepository;
 
     public FloodNotificationService() {
         addWardIdLock = new Object();
@@ -43,10 +50,20 @@ public class FloodNotificationService {
         return result;
     }
 
-    public boolean checkThenRemoveWardIdToFlood(String wardId) {
+    public boolean checkThenRemoveWardIdToFlood(Ward ward) {
         synchronized (addWardIdLock) {
-            if (floodLocationRepository.existsByWardId(wardId)) {
-                floodLocationRepository.deleteById(wardId);
+            if (floodLocationRepository.existsByWardId(ward.getId())) {
+
+                floodLocationRepository.deleteById(ward.getId());
+
+                List<Registration> registrationList = registrationRepository.findAllByWard(ward);
+
+                for (Registration registration : registrationList)
+                    if (registration.getEState() != EState.STATE_UNAUTHENTICATED) {
+                        registration.setEState(EState.STATE_AUTHENTICATED);
+                    }
+
+                registrationRepository.saveAll(registrationList);
 
                 return true;
 

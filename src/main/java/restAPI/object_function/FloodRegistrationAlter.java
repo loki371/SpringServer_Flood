@@ -48,6 +48,7 @@ public class FloodRegistrationAlter implements I_ObjectFunction{
             case STATE_SAVED:
                 if (newState == EState.STATE_EMERGENCY)
                     floodWardService.addRegistrationToFloodWard(ward.getId(), registration);
+
                 break;
 
             case STATE_EMERGENCY:
@@ -57,8 +58,12 @@ public class FloodRegistrationAlter implements I_ObjectFunction{
 
             case STATE_UNAUTHENTICATED:
                 if (newState == EState.STATE_AUTHENTICATED) {
+
                     registration.setEState(EState.STATE_DANGER);
+
                     repo.save(registration);
+
+                    //floodWardService.addRegistrationToFloodWard(ward.getId(), registration);
                 }
                 break;
         }

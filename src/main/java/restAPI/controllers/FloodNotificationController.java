@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import restAPI.grab.FloodWardService;
-import restAPI.models.registration.EState;
+import restAPI.models.location.Ward;
 import restAPI.models.registration.Registration;
 import restAPI.payload.SimplePayload;
 import restAPI.repository.registration.RegistrationRepository;
@@ -66,8 +66,8 @@ public class FloodNotificationController {
     public ResponseEntity<?> deleteLocationInFloodNotification(@PathVariable String wardId) {
         if (!wardService.existWardId(wardId))
             return ResponseEntity.notFound().build();
-
-        boolean result = floodNotificationService.checkThenRemoveWardIdToFlood(wardId);
+        Ward ward = wardService.getWardByWardId(wardId);
+        boolean result = floodNotificationService.checkThenRemoveWardIdToFlood(ward);
         if (!result) {
             floodWardService.removeFloodWard(wardId);
             return ResponseEntity.badRequest().body(new SimplePayload("object is not in FloodLocationList!", wardId));
