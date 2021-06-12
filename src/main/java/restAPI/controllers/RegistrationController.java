@@ -10,6 +10,7 @@ import restAPI.grab.FloodWardService;
 import restAPI.models.UserInfo;
 import restAPI.models.registration.EState;
 import restAPI.models.registration.Registration;
+import restAPI.models.registration.Viewer;
 import restAPI.models.role.ERole;
 import restAPI.object_function.FloodRegistrationAlter;
 import restAPI.object_function.I_ObjectFunction;
@@ -17,10 +18,13 @@ import restAPI.object_function.SetSavedByFunction;
 import restAPI.payload.RegistrationPayload;
 import restAPI.payload.SimplePayload;
 import restAPI.repository.registration.RegistrationRepository;
+import restAPI.repository.registration.ViewerRepository;
 import restAPI.security.services.UserDetailsImpl;
 import restAPI.services.RegistrationService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*",maxAge = 3600)
 @RestController
@@ -35,6 +39,9 @@ public class RegistrationController {
 
     @Autowired
     RegistrationRepository registrationRepository;
+
+    @Autowired
+    ViewerRepository viewerRepository;
 
     @PostMapping("/users")
     public ResponseEntity<?> addUserRegistration(@RequestBody RegistrationPayload request, Authentication authentication) {
@@ -55,7 +62,41 @@ public class RegistrationController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         List<Registration> registrationList = registrationService.getLocationRegistrations(userDetails.getUsername());
+
         return ResponseEntity.ok().body(new SimplePayload(registrationList));
+    }
+
+    @PostMapping("/MyRegistrations")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> addRegisToRegis(Authentication authentication, @RequestParam long registrationId) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        UserInfo userInfo = userDetails.getUserInfo();
+
+        Optional<Registration> registration = registrationRepository.findById(registrationId);
+        if (registration.isPresent()) {
+            if (userInfo.getUsername().equals(registration.get().getName()))
+                return ResponseEntity.badRequest().body(new SimplePayload("you is the owner of this registration"));
+
+            Optional<Viewer> viewerOptional = viewerRepository.findByUsername(userInfo.getUsername());
+            Viewer viewer;
+            if (viewerOptional.isPresent()) {
+                viewer = viewerOptional.get();
+            } else {
+                viewer = new Viewer(userInfo.getUsername());
+            }
+            List<Registration> registrationList = viewer.getRegistrationList();
+            for (Registration item : registrationList) {
+                if (item.getId() == registrationId)
+                    return ResponseEntity.badRequest().body(new SimplePayload("you viewed this registration"));
+            }
+
+            registrationList.add(registration.get());
+            viewerRepository.save(viewer);
+            return ResponseEntity.ok(new SimplePayload("ok", viewer));
+
+        } else {
+            return ResponseEntity.badRequest().body(new SimplePayload("registration is not exist"));
+        }
     }
 
     @GetMapping("/MyRegistrations")
@@ -63,8 +104,77 @@ public class RegistrationController {
     public ResponseEntity<?> getMyRegistrations(Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
+        List compositeList = new ArrayList();
         List<Registration> registrationList = registrationService.getMyRegistrations(userDetails.getUsername());
-        return ResponseEntity.ok().body(new SimplePayload(registrationList));
+
+        Viewer viewer;
+        Optional<Viewer> viewerOptional = viewerRepository.findByUsername(userDetails.getUsername());
+        if (!viewerOptional.isPresent())
+            viewer = new Viewer(userDetails.getUsername());
+        else
+            viewer = viewerOptional.get();
+
+        List<Registration> registrationList1 = viewer.getRegistrationList();
+
+        compositeList.add(registrationList);
+        compositeList.add(registrationList1);
+
+        return ResponseEntity.ok().body(new SimplePayload(compositeList));
+    }
+
+    @DeleteMapping("/MyRegistrations")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getDeleteRegistration(Authentication authentication, @RequestParam long registrationId) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        List<Registration> registrationList = registrationRepository.findAllByCreateBy(userDetails.getUserInfo());
+
+        Viewer viewer;
+        Optional<Viewer> viewerOptional = viewerRepository.findByUsername(userDetails.getUsername());
+        if (!viewerOptional.isPresent())
+            viewer = new Viewer(userDetails.getUsername());
+        else
+            viewer = viewerOptional.get();
+
+        List<Registration> registrationList1 = viewer.getRegistrationList();
+
+        boolean removed = registrationList.removeIf(item ->
+                item.getId() == registrationId);
+
+        registrationList1.removeIf(item ->
+                item.getId() == registrationId);
+
+        viewerRepository.save(viewer);
+        if (removed) {
+            registrationRepository.deleteById(registrationId);
+            System.out.println("delete in registration repo = true");
+        }
+
+        return ResponseEntity.ok().body(new SimplePayload("ok"));
+    }
+
+    @PostMapping("/MyRegistrations/update")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> updateRegistration(Authentication authentication, @RequestBody RegistrationPayload request) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        Optional<Registration> registration = registrationRepository.findById(request.getId());
+        if (registration.isPresent()) {
+            Registration regis1 = registration.get();
+
+            if (!regis1.getCreateBy().getUsername().equals(userDetails.getUsername()))
+                return ResponseEntity.badRequest().body(new SimplePayload("this regis do no belong to you"));
+
+            regis1.setNumPerson(request.getNumPerson());
+            regis1.setLatitude(request.getLatitude());
+            regis1.setLongitude(request.getLongitude());
+            regis1.setPhone(request.getPhone());
+            regis1.setName(request.getName());
+            registrationRepository.save(regis1);
+
+            return ResponseEntity.ok(new SimplePayload("ok"));
+        } else
+            return ResponseEntity.badRequest().body(new SimplePayload("this registration is not exists"));
     }
 
     @PutMapping("/authorities/{registrationId}")
