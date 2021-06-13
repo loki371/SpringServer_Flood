@@ -19,6 +19,7 @@ import restAPI.payload.RegistrationPayload;
 import restAPI.payload.SimplePayload;
 import restAPI.repository.registration.RegistrationRepository;
 import restAPI.repository.registration.ViewerRepository;
+import restAPI.repository.role.RoleVolunteerRepository;
 import restAPI.security.services.UserDetailsImpl;
 import restAPI.services.RegistrationService;
 
@@ -43,6 +44,12 @@ public class RegistrationController {
     @Autowired
     ViewerRepository viewerRepository;
 
+    @Autowired
+    RoleVolunteerRepository roleVolunteerRepository;
+
+    int countVolunteerGetList = 0;
+    public static final int sizeVolunteerList = 10;
+
     @PostMapping("/users")
     public ResponseEntity<?> addUserRegistration(@RequestBody RegistrationPayload request, Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -63,7 +70,32 @@ public class RegistrationController {
 
         List<Registration> registrationList = registrationService.getLocationRegistrations(userDetails.getUsername());
 
-        return ResponseEntity.ok().body(new SimplePayload(registrationList));
+        List finalList;
+
+        if (roleVolunteerRepository.existsByUsername(userDetails.getUsername())) {
+            finalList = new ArrayList();
+            registrationList.removeIf(item ->
+                    item.getEState() != EState.STATE_DANGER || item.getEState() != EState.STATE_EMERGENCY);
+
+            int start = countVolunteerGetList * sizeVolunteerList;
+            ++countVolunteerGetList;
+            int end = countVolunteerGetList * sizeVolunteerList;
+            countVolunteerGetList = countVolunteerGetList % 1000000;
+
+            int listSize = registrationList.size();
+            start = start % listSize;
+            end = end % listSize;
+
+            if (start - end < sizeVolunteerList)
+                end = start;
+
+            for (int i = start + 1; i != end; i = (i + 1) % listSize)
+                finalList.add(registrationList.get(i));
+
+        } else
+            finalList = registrationList;
+
+        return ResponseEntity.ok().body(new SimplePayload(finalList));
     }
 
     @PostMapping("/MyRegistrations")
