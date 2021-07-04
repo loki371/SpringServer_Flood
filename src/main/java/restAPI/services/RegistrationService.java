@@ -113,14 +113,14 @@ public class RegistrationService {
         if (authority.isPresent()) {
             RoleAuthority realAuthority = authority.get();
             ward = realAuthority.getWard();
-            System.out.println("Authority: ward = " + ward);
+            System.out.println("Authority: ward = " + ward.getId());
         } else {
 
             Optional<RoleRescuer> rescuer = roleRescuerRepository.findByUsername(username);
             if (rescuer.isPresent()) {
                 RoleRescuer realRescuer = rescuer.get();
                 ward = realRescuer.getWard();
-                System.out.println("Rescuer: ward = " + ward);
+                System.out.println("Rescuer: ward = " + ward.getId());
 
             } else {
 
@@ -128,7 +128,7 @@ public class RegistrationService {
                 if (volunteer.isPresent()) {
                     RoleVolunteer realVolunteer = volunteer.get();
                     ward = realVolunteer.getWard();
-                    System.out.println("Volunteer: ward = " + ward);
+                    System.out.println("Volunteer: ward = " + ward.getId());
 
                 }
             }

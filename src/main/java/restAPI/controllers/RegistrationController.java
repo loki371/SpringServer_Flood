@@ -47,7 +47,7 @@ public class RegistrationController {
     @Autowired
     RoleVolunteerRepository roleVolunteerRepository;
 
-    int countVolunteerGetList = 0;
+    int countVolunteerGetList = 1;
     public static final int sizeVolunteerList = 10;
 
     @PostMapping("/users")
@@ -75,7 +75,7 @@ public class RegistrationController {
         if (roleVolunteerRepository.existsByUsername(userDetails.getUsername())) {
             finalList = new ArrayList();
             registrationList.removeIf(item ->
-                    item.getEState() != EState.STATE_DANGER || item.getEState() != EState.STATE_EMERGENCY);
+                    item.getEState() != EState.STATE_DANGER && item.getEState() != EState.STATE_EMERGENCY);
 
             int start = countVolunteerGetList * sizeVolunteerList;
             ++countVolunteerGetList;
@@ -83,14 +83,17 @@ public class RegistrationController {
             countVolunteerGetList = countVolunteerGetList % 1000000;
 
             int listSize = registrationList.size();
-            start = start % listSize;
-            end = end % listSize;
+            System.out.println("Volunteer.getAllRegistrations: " + listSize);
+            if (listSize > 0) {
+                start = start % listSize;
+                end = end % listSize;
 
-            if (start - end < sizeVolunteerList)
-                end = start;
+                if (start - end < sizeVolunteerList)
+                    end = start;
 
-            for (int i = start + 1; i != end; i = (i + 1) % listSize)
-                finalList.add(registrationList.get(i));
+                for (int i = start + 1; i != end; i = (i + 1) % listSize)
+                    finalList.add(registrationList.get(i));
+            }
 
         } else
             finalList = registrationList;
