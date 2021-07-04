@@ -69,9 +69,10 @@ public class FloodNotificationController {
         Ward ward = wardService.getWardByWardId(wardId);
         boolean result = floodNotificationService.checkThenRemoveWardIdToFlood(ward);
         if (!result) {
-            floodWardService.removeFloodWard(wardId);
             return ResponseEntity.badRequest().body(new SimplePayload("object is not in FloodLocationList!", wardId));
+        } else {
+            floodWardService.removeFloodWard(wardId);
+            return ResponseEntity.ok().body(new SimplePayload("ok", wardId));
         }
-        return ResponseEntity.ok().body(new SimplePayload("ok", wardId));
     }
 }

@@ -39,8 +39,11 @@ public class FloodRegistrationAlter implements I_ObjectFunction{
     public void execute() {
         Ward ward = registration.getWard();
 
-        if (!floodWardService.checkInFlood(ward.getId()))
+        if (!floodWardService.checkInFlood(ward.getId())) {
             return;
+        }
+
+        System.out.println("FloodRegistrationAlter: floodWardService contain FloodWard: " + ward.getId());
 
         switch (oldState) {
             case STATE_DANGER:
