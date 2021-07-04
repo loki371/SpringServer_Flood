@@ -2,6 +2,7 @@ package restAPI.controllers;
 
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -14,8 +15,10 @@ import restAPI.models.location.Ward;
 import restAPI.models.registration.Registration;
 import restAPI.models.role.RoleRescuer;
 import restAPI.payload.SimplePayload;
+import restAPI.repository.registration.RegisOrderRepository;
 import restAPI.repository.role.RoleRescuerRepository;
 import restAPI.security.services.UserDetailsImpl;
+import restAPI.services.RegisOrderService;
 import restAPI.services.RegistrationService;
 
 import java.util.LinkedList;
@@ -31,6 +34,9 @@ public class FloodController {
 
     @Autowired
     RoleRescuerRepository roleRescuerRepository;
+
+    @Autowired
+    RegisOrderService regisOrderService;
 
     @GetMapping("/destinations")
     @PreAuthorize("hasRole('RESCUER')")
@@ -64,6 +70,7 @@ public class FloodController {
             bucket.phone = item1.getPhone();
             bucket.numPerson = item1.getNumPerson();
             bucket.ward = item1.getWard();
+            bucket.order = regisOrderService.getOrderById(item1.getId());
             resultList.add(bucket);
         }
         return ResponseEntity.ok(new SimplePayload(resultList));

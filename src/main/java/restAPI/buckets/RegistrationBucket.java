@@ -22,4 +22,6 @@ public class RegistrationBucket {
     public int numPerson;
 
     public EState eState;
+
+    public int order;
 }
