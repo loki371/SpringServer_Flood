@@ -196,7 +196,7 @@ public class LocationRegistrationService {
                     authorityRegistrationRepository.save(registration);
 
                     RoleAuthority childAuthority = roleAuthorityRepository.findByUsername(childUsername).get();
-                    if (childAuthority.getWard() != null && childAuthority.getWard().equals(childRequestLocation)) {
+                    if (childAuthority.getWard() != null && childAuthority.getWard().getId().equals(childRequestLocation)) {
                         childAuthority.setFarther(null);
                         childAuthority.setWard(null);
                     }
