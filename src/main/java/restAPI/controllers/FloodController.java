@@ -1,8 +1,6 @@
 package restAPI.controllers;
 
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -14,13 +12,13 @@ import restAPI.grab.flood_ward.entity.Location;
 import restAPI.models.location.Ward;
 import restAPI.models.registration.Registration;
 import restAPI.models.role.RoleRescuer;
+import restAPI.payload.DestinationPayload;
 import restAPI.payload.SimplePayload;
-import restAPI.repository.registration.RegisOrderRepository;
 import restAPI.repository.role.RoleRescuerRepository;
 import restAPI.security.services.UserDetailsImpl;
 import restAPI.services.RegisOrderService;
-import restAPI.services.RegistrationService;
 
+import javax.validation.Valid;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -193,8 +191,69 @@ public class FloodController {
         if (!floodWardService.checkRescuerStarted(userDetails.getUsername(), roleRescuer.getWard().getId()))
             return ResponseEntity.badRequest().body(new SimplePayload("rescuer must start before get destinations"));
 
-
         floodWardService.stop(userDetails.getUsername(), ward.getId());
+
+        return ResponseEntity.ok(new SimplePayload("ok"));
+    }
+
+    @GetMapping("/peopleNearRescuer")
+    @PreAuthorize("hasRole('RESCUER')")
+    public ResponseEntity<?> getPeopleNearRescuer(Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        RoleRescuer roleRescuer = roleRescuerRepository.findByUsername(userDetails.getUsername()).get();
+
+        Ward ward = roleRescuer.getWard();
+        if (ward == null)
+            return ResponseEntity.badRequest().body(new SimplePayload("you do not have any ward"));
+
+        if (!floodWardService.checkInFlood(ward.getId()))
+            return ResponseEntity.badRequest().body(new SimplePayload("this location do not have any flood"));
+
+        if (!floodWardService.checkRescuerStarted(userDetails.getUsername(), roleRescuer.getWard().getId()))
+            return ResponseEntity.badRequest().body(new SimplePayload("rescuer must start before get destinations"));
+
+        List<FloodRegistration> floodRegistrationList =
+                floodWardService.getFloodRegistrationNearRescuer(
+                        roleRescuer.getWard().getId(),
+                        userDetails.getUsername());
+
+        List<RegistrationBucket> resultList = new LinkedList<>();
+        for (FloodRegistration item : floodRegistrationList) {
+            Registration item1 = item.getRegistration();
+            RegistrationBucket bucket = new RegistrationBucket();
+            bucket.id = item1.getId();
+            bucket.eState = item1.getEState();
+            bucket.latitude = item1.getLatitude();
+            bucket.longitude = item1.getLongitude();
+            bucket.name = item1.getName();
+            bucket.phone = item1.getPhone();
+            bucket.numPerson = item1.getNumPerson();
+            bucket.ward = item1.getWard();
+            bucket.order = regisOrderService.getOrderById(item1.getId());
+            resultList.add(bucket);
+        }
+        return ResponseEntity.ok(new SimplePayload(resultList));
+    }
+
+    @DeleteMapping("/destinations")
+    @PreAuthorize("hasRole('RESCUER')")
+    public ResponseEntity<?> deleteListDestination(Authentication authentication, @Valid @RequestBody DestinationPayload request) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        RoleRescuer roleRescuer = roleRescuerRepository.findByUsername(userDetails.getUsername()).get();
+        if (roleRescuer.getWard() == null)
+            return ResponseEntity.badRequest().body(new SimplePayload("you must sign up to 1 ward"));
+
+        if(!floodWardService.checkInFlood(roleRescuer.getWard().getId()))
+            return ResponseEntity.badRequest().body(new SimplePayload("this ward do not have flood"));
+
+        if (!floodWardService.checkRescuerStarted(userDetails.getUsername(), roleRescuer.getWard().getId()))
+            return ResponseEntity.badRequest().body(new SimplePayload("rescuer must start before get destinations"));
+
+        floodWardService.deleteDestinationFromRescuer(
+                roleRescuer.getWard().getId(),
+                roleRescuer.getUsername(),
+                request.registrationIds);
 
         return ResponseEntity.ok(new SimplePayload("ok"));
     }

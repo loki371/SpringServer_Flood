@@ -77,6 +77,19 @@ public class FloodWardService {
         return floodRescuer.getFloodDestinations();
     }
 
+    public List<FloodRegistration> getFloodRegistrationNearRescuer(String wardId, String rescuerUsername) {
+        System.out.println("FloodWardService.getFloodRegistrationNearRescuer");
+        FloodWard floodWard = floodingWardMap.get(wardId);
+        if (floodWard == null)
+            return null;
+
+        FloodRescuer floodRescuer = floodWard.getRescuer(rescuerUsername);
+        if (floodRescuer == null)
+            return null;
+
+        return floodWard.updateGSPRegistrationForRescuers(floodRescuer);
+    }
+
     public boolean checkInFlood(String wardId) {
         return floodingWardMap.containsKey(wardId);
     }
@@ -135,5 +148,10 @@ public class FloodWardService {
     public void removeRegistrationFromFloodWard(String wardId, Registration registration) {
         FloodWard floodWard = floodingWardMap.get(wardId);
         floodWard.removeRegistration(registration);
+    }
+
+    public void deleteDestinationFromRescuer(String wardId, String rescuerUsername, long[] registrationIds) {
+        FloodWard floodWard = floodingWardMap.get(wardId);
+        floodWard.removeRegistrationOfRescuer(rescuerUsername, registrationIds);
     }
 }

@@ -28,7 +28,7 @@ public class FloodRegistrationManager {
     }
 
     public List<FloodRegistration> getListRegistration() {
-        return new ArrayList<>(this.floodRegistrationMap.values());
+        return (List<FloodRegistration>) floodRegistrationMap.values();
     }
 
     public FloodRegistration getRegistration(long regisId) {

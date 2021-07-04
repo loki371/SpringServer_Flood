@@ -53,7 +53,7 @@ public class FloodRescuer {
     }
 
     public synchronized List<FloodRegistration> getFloodDestinations() {
-        return new LinkedList<>(this.floodDestinations);
+        return floodDestinations;
     }
 
     public synchronized void addToListRegis(FloodRegistration item) {
