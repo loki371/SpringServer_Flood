@@ -262,7 +262,7 @@ public class LocationRegistrationService {
                     rescuerRegistrationRepository.save(registration);
 
                     RoleRescuer child = roleRescuerRepository.findByUsername(childUsername).get();
-                    if (child.getWard() != null && child.getWard().equals(childRequestLocation))
+                    if (child.getWard() != null && child.getWard().getId().equals(childRequestLocation))
                         child.setWard(null);
                     roleRescuerRepository.save(child);
 
@@ -321,7 +321,7 @@ public class LocationRegistrationService {
                     volunteerRegistrationRepository.save(registration);
 
                     RoleVolunteer child = roleVolunteerRepository.findByUsername(childUsername).get();
-                    if (child.getWard() != null && child.getWard().equals(childRequestLocation))
+                    if (child.getWard() != null && child.getWard().getId().equals(childRequestLocation))
                         child.setWard(null);
                     roleVolunteerRepository.save(child);
 
