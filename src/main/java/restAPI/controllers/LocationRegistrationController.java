@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import restAPI.Constants;
+import restAPI.buckets.LocationRegistrationBucket;
 import restAPI.models.locationRegistration.AuthorityLocationRegistration;
 import restAPI.models.locationRegistration.RescuerLocationRegistration;
 import restAPI.models.locationRegistration.VolunteerLocationRegistration;
@@ -18,6 +19,7 @@ import restAPI.security.services.UserDetailsImpl;
 import restAPI.services.LocationRegistrationService;
 import restAPI.services.UserInfoService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
@@ -176,6 +178,8 @@ public class LocationRegistrationController {
         RescuerLocationRegistration item = (RescuerLocationRegistration)
                 locationRegistrationService.getMyRegistration(ERole.ROLE_RESCUER, userDetails.getUsername());
 
+//        LocationRegistrationBucket bucket = new LocationRegistrationBucket(item);
+
         return ResponseEntity.ok().body(new SimplePayload(item));
     }
 
@@ -187,7 +191,9 @@ public class LocationRegistrationController {
         VolunteerLocationRegistration item = (VolunteerLocationRegistration)
                 locationRegistrationService.getMyRegistration(ERole.ROLE_VOLUNTEER, userDetails.getUsername());
 
-        return ResponseEntity.ok().body(new SimplePayload(item));
+        LocationRegistrationBucket bucket = new LocationRegistrationBucket(item);
+
+        return ResponseEntity.ok().body(new SimplePayload(bucket));
     }
 
     @GetMapping("/authorities")
@@ -196,7 +202,14 @@ public class LocationRegistrationController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         List<Object> list = locationRegistrationService.getListAllLocation(ERole.ROLE_AUTHORITY, userDetails.getUsername());
-        return ResponseEntity.ok().body(new SimplePayload(list));
+
+        List<LocationRegistrationBucket> buckets = new ArrayList<>();
+        for (Object item : list) {
+            AuthorityLocationRegistration itemX = (AuthorityLocationRegistration) item;
+            buckets.add(new LocationRegistrationBucket(itemX));
+        }
+
+        return ResponseEntity.ok().body(new SimplePayload(buckets));
     }
 
     @GetMapping("/volunteers")
@@ -205,7 +218,13 @@ public class LocationRegistrationController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         List<Object> list = locationRegistrationService.getListAllLocation(ERole.ROLE_VOLUNTEER, userDetails.getUsername());
-        return ResponseEntity.ok().body(new SimplePayload(list));
+        List<LocationRegistrationBucket> buckets = new ArrayList<>();
+        for (Object item : list) {
+            VolunteerLocationRegistration itemX = (VolunteerLocationRegistration) item;
+            buckets.add(new LocationRegistrationBucket(itemX));
+        }
+
+        return ResponseEntity.ok().body(new SimplePayload(buckets));
     }
 
     @GetMapping("/rescuers")
@@ -214,7 +233,13 @@ public class LocationRegistrationController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         List<Object> list = locationRegistrationService.getListAllLocation(ERole.ROLE_RESCUER, userDetails.getUsername());
-        return ResponseEntity.ok().body(new SimplePayload(list));
+        List<LocationRegistrationBucket> buckets = new ArrayList<>();
+        for (Object item : list) {
+            RescuerLocationRegistration itemX = (RescuerLocationRegistration) item;
+            buckets.add(new LocationRegistrationBucket(itemX));
+        }
+
+        return ResponseEntity.ok().body(new SimplePayload(buckets));
     }
 
     @PostMapping("/authorities/{username}")
