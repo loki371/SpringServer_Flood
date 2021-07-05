@@ -11,6 +11,7 @@ import restAPI.models.registration.Registration;
 import restAPI.models.role.RoleRescuer;
 import restAPI.repository.registration.RegistrationRepository;
 import restAPI.services.FloodNotificationService;
+import restAPI.services.RegisOrderService;
 import restAPI.services.RegistrationService;
 
 import javax.annotation.PostConstruct;
@@ -28,6 +29,9 @@ public class FloodWardService {
 
     @Autowired
     RegistrationService registrationService;
+
+    @Autowired
+    RegisOrderService regisOrderService;
 
     private Map<String, FloodWard> floodingWardMap = new ConcurrentHashMap<>();
 
@@ -48,7 +52,7 @@ public class FloodWardService {
             return false;
         }
 
-        FloodWard floodWard = new FloodWard(wardId, registrationList);
+        FloodWard floodWard = new FloodWard(wardId, registrationList, regisOrderService);
 
         floodingWardMap.put(wardId, floodWard);
 

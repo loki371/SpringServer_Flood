@@ -9,20 +9,24 @@ import restAPI.models.registration.EState;
 import restAPI.models.registration.Registration;
 import restAPI.models.role.RoleRescuer;
 import restAPI.repository.registration.RegistrationRepository;
+import restAPI.services.RegisOrderService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 
 public class FloodWard {
+    private RegisOrderService regisOrderService;
+
     public final String wardId;
     private final FloodRescuerManager rescuerManager;
     private final FloodRegistrationManager destinationManager;
 
-    public FloodWard(String wardId, List<Registration> registrationList) {
+    public FloodWard(String wardId, List<Registration> registrationList, RegisOrderService regisOrderService) {
         this.wardId = wardId;
+        this.regisOrderService = regisOrderService;
         rescuerManager = new FloodRescuerManager();
-        destinationManager = new FloodRegistrationManager(registrationList);
+        destinationManager = new FloodRegistrationManager(registrationList, regisOrderService);
 
         System.out.println("\nFloodWard: constructor: wardId = " + wardId + " destinationSize = " + registrationList.size());
     }
@@ -243,7 +247,7 @@ public class FloodWard {
     }
 
     public synchronized void addRegistration(Registration registration) {
-        destinationManager.addRegistration(registration);
+        destinationManager.addRegistration(registration, regisOrderService);
     }
 
     public synchronized void removeRegistration(Registration registration) {

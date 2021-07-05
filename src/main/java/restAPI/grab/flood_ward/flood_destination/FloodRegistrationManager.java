@@ -6,6 +6,7 @@ import restAPI.grab.flood_ward.entity.FloodRegistration;
 import restAPI.grab.flood_ward.entity.FloodRescuer;
 import restAPI.models.registration.EState;
 import restAPI.models.registration.Registration;
+import restAPI.services.RegisOrderService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,13 +16,18 @@ import java.util.Map;
 public class FloodRegistrationManager {
     private final Map<Long, FloodRegistration> floodRegistrationMap;
 
-    public FloodRegistrationManager(List<Registration> registrations) {
+    public FloodRegistrationManager(List<Registration> registrations, RegisOrderService regisOrderService) {
         this.floodRegistrationMap = new HashMap<>();
         for (Registration registration : registrations) {
             if (registration.getEState() != EState.STATE_EMERGENCY && registration.getEState() != EState.STATE_DANGER)
                 continue;
             System.out.println("    -> create item in flood area: " + registration.getName());
-            FloodRegistration floodRegistration = new FloodRegistration(registration, null);
+            FloodRegistration floodRegistration = new FloodRegistration(
+                    registration,
+                    null,
+                    regisOrderService.getOrderById(registration.getId())
+            );
+
             this.floodRegistrationMap.put(registration.getId(), floodRegistration);
         }
         System.out.println("after create Destination, size = " + floodRegistrationMap.values().size());
@@ -40,8 +46,12 @@ public class FloodRegistrationManager {
         System.out.println("- destinationMgr remove regisId = " + regisId);
     }
 
-    public void addRegistration(Registration registration) {
-        FloodRegistration floodRegistration = new FloodRegistration(registration, null);
+    public void addRegistration(Registration registration, RegisOrderService regisOrderService) {
+        FloodRegistration floodRegistration = new FloodRegistration(
+                registration,
+                null,
+                regisOrderService.getOrderById(registration.getId())
+        );
         this.floodRegistrationMap.put(registration.getId(), floodRegistration);
     }
 }
