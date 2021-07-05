@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import restAPI.ErrorCode;
+import restAPI.buckets.RegistrationBucket;
 import restAPI.grab.FloodWardService;
 import restAPI.models.UserInfo;
 import restAPI.models.location.Ward;
@@ -51,6 +52,9 @@ public class RegistrationController {
     @Autowired
     RoleVolunteerRepository roleVolunteerRepository;
 
+    @Autowired
+    RegisOrderService regisOrderService;
+
     int countVolunteerGetList = 1;
     public static final int sizeVolunteerList = 10;
 
@@ -95,8 +99,22 @@ public class RegistrationController {
                 if (start - end < sizeVolunteerList)
                     end = start;
 
-                for (int i = start + 1; i != end; i = (i + 1) % listSize)
-                    finalList.add(registrationList.get(i));
+                for (int i = start + 1; i != end; i = (i + 1) % listSize) {
+                    Registration item = registrationList.get(i);
+                    RegistrationBucket bucket = new RegistrationBucket();
+
+                    bucket.id = item.getId();
+                    bucket.eState = item.getEState();
+                    bucket.latitude = item.getLatitude();
+                    bucket.longitude = item.getLongitude();
+                    bucket.name = item.getName();
+                    bucket.phone = item.getPhone();
+                    bucket.numPerson = item.getNumPerson();
+                    bucket.ward = item.getWard();
+                    bucket.order = regisOrderService.getOrderById(item.getId());
+
+                    finalList.add(bucket);
+                }
             }
 
         } else
