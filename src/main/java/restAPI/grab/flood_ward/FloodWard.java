@@ -73,7 +73,7 @@ public class FloodWard {
             System.out.println(" - Registration name " + registration.getName() + " eState = " + registration.getEState()
                     + " distance = " + curDistance);
 
-            if (curDistance > minDistance) {
+            if (curDistance < minDistance) {
                 target = item;
                 minDistance = curDistance;
                 System.out.println("   -> set minDistance = " + minDistance + " and target = " + registration.getId());
