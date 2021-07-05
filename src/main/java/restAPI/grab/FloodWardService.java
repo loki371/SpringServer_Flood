@@ -18,7 +18,6 @@ import restAPI.services.RegistrationService;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -165,7 +164,7 @@ public class FloodWardService {
         FloodWard floodWard = floodingWardMap.get(wardId);
 
         RegisOrder regisOrder = regisOrderService.getObjectByRegisId(regisId, wardId);
-        regisOrder.setOrder(order);
+        regisOrder.setOrderRegis(order);
         regisOrderService.save(regisOrder);
 
         floodWard.updateNumPeopleAndOrderRegis(regisId, numPeople, order);

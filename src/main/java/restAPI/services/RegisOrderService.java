@@ -19,7 +19,7 @@ public class RegisOrderService {
 
     public int getOrderById(long regisId) {
         Optional<RegisOrder> regisOrderOptional = regisOrderRepository.findById(regisId);
-        return regisOrderOptional.map(RegisOrder::getOrder).orElse(ORDER_NORMAL);
+        return regisOrderOptional.map(RegisOrder::getOrderRegis).orElse(ORDER_NORMAL);
     }
 
     public RegisOrder getObjectByRegisId(long regisId, String wardId) {

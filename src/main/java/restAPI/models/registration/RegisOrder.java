@@ -16,12 +16,12 @@ import javax.persistence.Table;
 public class RegisOrder {
     @Id
     private Long id;
-    private int order;
+    private int orderRegis;
     private String wardId;
 
-    public RegisOrder(long regisId, int order, String wardId) {
+    public RegisOrder(long regisId, int orderRegis, String wardId) {
         this.id = regisId;
-        this.order = order;
+        this.orderRegis = orderRegis;
         this.wardId = wardId;
     }
 }
