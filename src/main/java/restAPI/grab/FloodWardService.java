@@ -7,6 +7,7 @@ import restAPI.grab.flood_ward.entity.FloodRegistration;
 import restAPI.grab.flood_ward.entity.FloodRescuer;
 import restAPI.grab.flood_ward.entity.Location;
 import restAPI.models.location.Ward;
+import restAPI.models.registration.RegisOrder;
 import restAPI.models.registration.Registration;
 import restAPI.models.role.RoleRescuer;
 import restAPI.repository.registration.RegistrationRepository;
@@ -17,6 +18,7 @@ import restAPI.services.RegistrationService;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -157,5 +159,15 @@ public class FloodWardService {
     public void deleteDestinationFromRescuer(String wardId, String rescuerUsername, long[] registrationIds) {
         FloodWard floodWard = floodingWardMap.get(wardId);
         floodWard.removeRegistrationOfRescuer(rescuerUsername, registrationIds);
+    }
+
+    public void updateRegistrationInWard(String wardId, long regisId, int numPeople, int order) {
+        FloodWard floodWard = floodingWardMap.get(wardId);
+
+        RegisOrder regisOrder = regisOrderService.getObjectByRegisId(regisId, wardId);
+        regisOrder.setOrder(order);
+        regisOrderService.save(regisOrder);
+
+        floodWard.updateNumPeopleAndOrderRegis(regisId, numPeople, order);
     }
 }

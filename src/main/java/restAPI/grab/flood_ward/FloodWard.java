@@ -352,4 +352,13 @@ public class FloodWard {
             return false;
         });
     }
+
+    public synchronized void updateNumPeopleAndOrderRegis(long regisId, int numPeople, int order) {
+        FloodRegistration floodRegistration = destinationManager.getRegistration(regisId);
+        if (floodRegistration == null)
+            return;
+
+        floodRegistration.setOrder(order);
+        floodRegistration.getRegistration().setNumPerson(numPeople);
+    }
 }

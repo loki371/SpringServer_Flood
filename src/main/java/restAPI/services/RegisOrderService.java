@@ -21,4 +21,20 @@ public class RegisOrderService {
         Optional<RegisOrder> regisOrderOptional = regisOrderRepository.findById(regisId);
         return regisOrderOptional.map(RegisOrder::getOrder).orElse(ORDER_NORMAL);
     }
+
+    public RegisOrder getObjectByRegisId(long regisId, String wardId) {
+        Optional<RegisOrder> regisOrderOptional = regisOrderRepository.findById(regisId);
+        if (regisOrderOptional.isPresent()) {
+            return regisOrderOptional.get();
+        } else {
+            RegisOrder regisOrder = new RegisOrder();
+            regisOrder.setId(regisId);
+            regisOrder.setWardId(wardId);
+            return regisOrder;
+        }
+    }
+
+    public void save(RegisOrder regisOrder) {
+        regisOrderRepository.save(regisOrder);
+    }
 }

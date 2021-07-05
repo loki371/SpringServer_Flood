@@ -8,10 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import restAPI.ErrorCode;
 import restAPI.grab.FloodWardService;
 import restAPI.models.UserInfo;
+import restAPI.models.location.Ward;
 import restAPI.models.registration.EState;
+import restAPI.models.registration.RegisOrder;
 import restAPI.models.registration.Registration;
 import restAPI.models.registration.Viewer;
 import restAPI.models.role.ERole;
+import restAPI.models.role.RoleVolunteer;
 import restAPI.object_function.FloodRegistrationAlter;
 import restAPI.object_function.I_ObjectFunction;
 import restAPI.object_function.SetSavedByFunction;
@@ -21,6 +24,7 @@ import restAPI.repository.registration.RegistrationRepository;
 import restAPI.repository.registration.ViewerRepository;
 import restAPI.repository.role.RoleVolunteerRepository;
 import restAPI.security.services.UserDetailsImpl;
+import restAPI.services.RegisOrderService;
 import restAPI.services.RegistrationService;
 
 import java.util.ArrayList;
@@ -312,4 +316,46 @@ public class RegistrationController {
             return ResponseEntity.badRequest().body(new SimplePayload(errorCode.toString()));
     }
 
+    @PutMapping("/updateRegistrations/{registrationId}")
+    @PreAuthorize("hasRole('VOLUNTEER')")
+    public ResponseEntity<?> confirmRegistration(@PathVariable Long registrationId, Authentication authentication,
+                                                 @RequestParam("numPeople") int numPeople,
+                                                 @RequestParam("order") int order) {
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        RoleVolunteer volunteer = roleVolunteerRepository.findByUsername(userDetails.getUsername()).get();
+        Ward ward = volunteer.getWard();
+
+        if (ward == null)
+            return ResponseEntity.badRequest().body("volunteer do not have any ward");
+
+        if (floodWardService.checkInFlood(ward.getId()))
+            return ResponseEntity.badRequest().body("this location is not in flood");
+
+        Optional<Registration> registrationOptional = registrationRepository.findById(registrationId);
+
+        if (registrationOptional.isPresent()) {
+
+            Registration registration = registrationOptional.get();
+
+            if (!registration.getWard().getId().equals(ward.getId()))
+                return ResponseEntity.badRequest().body(new SimplePayload("volunteer - regis do not match"));
+
+            registration.setNumPerson(numPeople);
+            registrationRepository.save(registration);
+
+            floodWardService.updateRegistrationInWard(
+                    registration.getWard().getId(),
+                    registration.getId(),
+                    numPeople,
+                    order
+            );
+
+            return ResponseEntity.ok(new SimplePayload("ok"));
+
+        } else {
+            return ResponseEntity.badRequest().body(new SimplePayload("regis is not present"));
+        }
+    }
 }
