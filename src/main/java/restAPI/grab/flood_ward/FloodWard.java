@@ -37,7 +37,7 @@ public class FloodWard {
     private int getMaxEmergencyOrderOfListFloodRegis(List<FloodRegistration> floodRegistrations) {
         int maxEmergencyOrder = RegisOrderService.ORDER_NORMAL;
         for (FloodRegistration item : floodRegistrations) {
-            if (item.getOrder() < maxEmergencyOrder)
+            if (item.getOrder() <= maxEmergencyOrder)
                 maxEmergencyOrder = item.getOrder();
         }
         return maxEmergencyOrder;
@@ -55,6 +55,9 @@ public class FloodWard {
         for (FloodRegistration item : floodRegistrations) {
 
             if (item.getRescuerUsername() != null)
+                continue;
+
+            if (item.getOrder() != maxEmergencyOrder)
                 continue;
 
             Registration registration = item.getRegistration();
@@ -100,7 +103,16 @@ public class FloodWard {
         System.out.println("Flood RegistrationList = " + floodRegistrations.size());
 
         int maxEmergencyOrder = getMaxEmergencyOrderOfListFloodRegis(floodRegistrations);
+
+        System.out.println("max Emergency Order = " + maxEmergencyOrder);
+
         FloodRegistration targetDestination = findTargetDestination(floodRegistrations, maxEmergencyOrder, floodRescuer);
+
+        if (targetDestination == null) {
+            System.out.println("targetDestination == null -> return");
+            return;
+        }
+
         double targetDistance = targetDestination.getDistance2Rescuer();
 
         System.out.println("\nnow, find destination from road to target");
