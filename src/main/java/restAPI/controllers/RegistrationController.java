@@ -23,6 +23,7 @@ import restAPI.payload.RegistrationPayload;
 import restAPI.payload.SimplePayload;
 import restAPI.repository.registration.RegistrationRepository;
 import restAPI.repository.registration.ViewerRepository;
+import restAPI.repository.role.RoleAuthorityRepository;
 import restAPI.repository.role.RoleVolunteerRepository;
 import restAPI.security.services.UserDetailsImpl;
 import restAPI.services.RegisOrderService;
@@ -51,6 +52,9 @@ public class RegistrationController {
 
     @Autowired
     RoleVolunteerRepository roleVolunteerRepository;
+
+    @Autowired
+    RoleAuthorityRepository roleAuthorityRepository;
 
     @Autowired
     RegisOrderService regisOrderService;
@@ -117,8 +121,27 @@ public class RegistrationController {
                 }
             }
 
-        } else
+        } else if (roleAuthorityRepository.existsByUsername(userDetails.getUsername())) {
+            finalList = new ArrayList();
+
+            for (Registration item : registrationList) {
+                RegistrationBucket bucket = new RegistrationBucket();
+
+                bucket.id = item.getId();
+                bucket.eState = item.getEState();
+                bucket.latitude = item.getLatitude();
+                bucket.longitude = item.getLongitude();
+                bucket.name = item.getName();
+                bucket.phone = item.getPhone();
+                bucket.numPerson = item.getNumPerson();
+                bucket.ward = item.getWard();
+//                bucket.order = regisOrderService.getOrderById(item.getId());
+
+                finalList.add(bucket);
+            }
+        } else {
             finalList = registrationList;
+        }
 
         return ResponseEntity.ok().body(new SimplePayload(finalList));
     }
