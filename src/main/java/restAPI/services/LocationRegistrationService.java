@@ -129,7 +129,7 @@ public class LocationRegistrationService {
                     dkq.username = item.getUsername();
                     dkq.email = userInfo.getEmail();
                     dkq.phone = userInfo.getPhone();
-                    dkq.estate = item.getEstate();
+                    dkq.eState = item.getEstate();
 
                     result.add(dkq);
                 }
@@ -145,7 +145,7 @@ public class LocationRegistrationService {
                     dkq.username = item.getUsername();
                     dkq.email = userInfo.getEmail();
                     dkq.phone = userInfo.getPhone();
-                    dkq.estate = item.getEstate();
+                    dkq.eState = item.getEstate();
 
                     result.add(dkq);
                 }
@@ -161,7 +161,7 @@ public class LocationRegistrationService {
                     dkq.username = item.getUsername();
                     dkq.email = userInfo.getEmail();
                     dkq.phone = userInfo.getPhone();
-                    dkq.estate = item.getEstate();
+                    dkq.eState = item.getEstate();
 
                     result.add(dkq);
                 }

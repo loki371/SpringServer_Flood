@@ -11,5 +11,5 @@ public class DangKyQuyen {
     public String username;
     public String phone;
     public String email;
-    public EState estate;
+    public EState eState;
 }
