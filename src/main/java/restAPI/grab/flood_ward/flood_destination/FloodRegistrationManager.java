@@ -34,7 +34,7 @@ public class FloodRegistrationManager {
     }
 
     public List<FloodRegistration> getListRegistration() {
-        return (List<FloodRegistration>) floodRegistrationMap.values();
+        return new ArrayList<>(floodRegistrationMap.values());
     }
 
     public FloodRegistration getRegistration(long regisId) {
