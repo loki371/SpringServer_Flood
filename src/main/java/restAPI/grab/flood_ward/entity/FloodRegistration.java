@@ -6,10 +6,11 @@ import restAPI.models.registration.Registration;
 
 @Getter @Setter
 public class FloodRegistration {
-    private Registration registration;
+    private final Registration registration;
     private String rescuerUsername;
-    private float distance2Rescuer;
     private int order;
+
+    private double distance2Rescuer = Double.MAX_VALUE;
 
     public FloodRegistration(Registration registration, String rescuerUsername, int order) {
         this.registration = registration;
