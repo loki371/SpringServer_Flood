@@ -371,7 +371,7 @@ public class RegistrationController {
         if (ward == null)
             return ResponseEntity.badRequest().body("volunteer do not have any ward");
 
-        if (floodWardService.checkInFlood(ward.getId()))
+        if (!floodWardService.checkInFlood(ward.getId()))
             return ResponseEntity.badRequest().body("this location is not in flood");
 
         Optional<Registration> registrationOptional = registrationRepository.findById(registrationId);
