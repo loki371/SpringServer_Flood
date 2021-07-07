@@ -167,7 +167,9 @@ public class LocationRegistrationController {
         AuthorityLocationRegistration item = (AuthorityLocationRegistration)
                 locationRegistrationService.getMyRegistration(ERole.ROLE_AUTHORITY, userDetails.getUsername());
 
-        return ResponseEntity.ok().body(new SimplePayload(item));
+        LocationRegistrationBucket bucket = new LocationRegistrationBucket(item);
+
+        return ResponseEntity.ok().body(new SimplePayload(bucket));
     }
 
     @GetMapping("/myRegistration/rescuer")
@@ -191,9 +193,9 @@ public class LocationRegistrationController {
         VolunteerLocationRegistration item = (VolunteerLocationRegistration)
                 locationRegistrationService.getMyRegistration(ERole.ROLE_VOLUNTEER, userDetails.getUsername());
 
-//        LocationRegistrationBucket bucket = new LocationRegistrationBucket(item);
+        LocationRegistrationBucket bucket = new LocationRegistrationBucket(item);
 
-        return ResponseEntity.ok().body(new SimplePayload(item));
+        return ResponseEntity.ok().body(new SimplePayload(bucket));
     }
 
     @GetMapping("/authorities")
