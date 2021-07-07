@@ -19,7 +19,7 @@ public class FloodRegistrationManager {
     public FloodRegistrationManager(List<Registration> registrations, RegisOrderService regisOrderService) {
         this.floodRegistrationMap = new HashMap<>();
         for (Registration registration : registrations) {
-            if (registration.getEState() != EState.STATE_EMERGENCY && registration.getEState() != EState.STATE_DANGER)
+            if (registration.getEState() != EState.STATE_EMERGENCY)
                 continue;
             System.out.println("    -> create item in flood area: " + registration.getName());
             FloodRegistration floodRegistration = new FloodRegistration(
