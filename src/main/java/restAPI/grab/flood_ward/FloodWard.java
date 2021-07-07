@@ -23,7 +23,7 @@ public class FloodWard {
     public final String wardId;
     private final FloodRescuerManager rescuerManager;
     private final FloodRegistrationManager destinationManager;
-    public static final double RANGE_TARGET_RESCUER = 1.5;
+    public static final double RANGE_TARGET_RESCUER = 1.2;
 
     public FloodWard(String wardId, List<Registration> registrationList, RegisOrderService regisOrderService) {
         this.wardId = wardId;
