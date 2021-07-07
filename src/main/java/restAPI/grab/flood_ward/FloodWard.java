@@ -24,6 +24,7 @@ public class FloodWard {
     private final FloodRescuerManager rescuerManager;
     private final FloodRegistrationManager destinationManager;
     public static final double RANGE_TARGET_RESCUER = 1.2;
+    public static final int METER_NEAR_GPS = 400;
 
     public FloodWard(String wardId, List<Registration> registrationList, RegisOrderService regisOrderService) {
         this.wardId = wardId;
@@ -217,8 +218,8 @@ public class FloodWard {
             System.out.println(" - Registration name " + registration.getName() + " eState = " + registration.getEState()
                     + " distance = " + curDistance);
 
-            if (curDistance > 200) {
-                System.out.println("   -> currDistance > 200m -> skip");
+            if (curDistance > METER_NEAR_GPS) {
+                System.out.println("   -> currDistance > 400m -> skip");
                 continue;
             }
 

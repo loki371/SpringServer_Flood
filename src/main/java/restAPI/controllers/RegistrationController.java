@@ -298,9 +298,11 @@ public class RegistrationController {
                 newState,
                 lastAction);
 
-        if (errorCode == ErrorCode.OK)
-            return ResponseEntity.ok(new SimplePayload("updated"));
-        else {
+
+        if (errorCode == ErrorCode.OK) {
+            Registration registration = registrationRepository.findById(registrationId).get();
+            return ResponseEntity.ok(new SimplePayload("updated", registration.getEState() == EState.STATE_DANGER));
+        } else {
             System.out.println("errorCode = " + errorCode.toString());
             return ResponseEntity.badRequest().body(new SimplePayload(errorCode.toString()));
         }
@@ -351,9 +353,9 @@ public class RegistrationController {
                 newState,
                 lastAction);
 
-        if (errorCode == ErrorCode.OK)
-            return ResponseEntity.ok(new SimplePayload("updated"));
-        else
+        if (errorCode == ErrorCode.OK) {
+            return ResponseEntity.ok(new SimplePayload("updated", false));
+        } else
             return ResponseEntity.badRequest().body(new SimplePayload(errorCode.toString()));
     }
 
