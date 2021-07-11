@@ -197,7 +197,10 @@ public class RegistrationController {
         List<Registration> registrationList1 = viewer.getRegistrationList();
 
         compositeList.add(registrationList);
-        compositeList.add(registrationList1);
+        for (Registration item : registrationList1) {
+            if (registrationRepository.existsById(item.getId()))
+                compositeList.add(registrationList1);
+        }
 
         return ResponseEntity.ok().body(new SimplePayload(compositeList));
     }
@@ -211,10 +214,7 @@ public class RegistrationController {
 
         Viewer viewer;
         Optional<Viewer> viewerOptional = viewerRepository.findByUsername(userDetails.getUsername());
-        if (!viewerOptional.isPresent())
-            viewer = new Viewer(userDetails.getUsername());
-        else
-            viewer = viewerOptional.get();
+        viewer = viewerOptional.orElseGet(() -> new Viewer(userDetails.getUsername()));
 
         List<Registration> registrationList1 = viewer.getRegistrationList();
 
@@ -224,6 +224,7 @@ public class RegistrationController {
         registrationList1.removeIf(item ->
                 item.getId() == registrationId);
 
+        viewer.setRegistrationList(registrationList1);
         viewerRepository.save(viewer);
         if (removed) {
             registrationRepository.deleteById(registrationId);
