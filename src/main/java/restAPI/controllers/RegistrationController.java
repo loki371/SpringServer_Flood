@@ -197,10 +197,10 @@ public class RegistrationController {
         List<Registration> registrationList1 = viewer.getRegistrationList();
 
         compositeList.add(registrationList);
-        for (Registration item : registrationList1) {
-            if (registrationRepository.existsById(item.getId()))
-                compositeList.add(registrationList1);
-        }
+
+        registrationList1.removeIf(item -> !registrationRepository.existsById(item.getId()));
+        compositeList.add(registrationList1);
+
 
         return ResponseEntity.ok().body(new SimplePayload(compositeList));
     }
