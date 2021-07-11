@@ -24,6 +24,6 @@ public class Viewer {
     @Id
     private String username;
 
-    @OneToMany
+    @ManyToMany
     private List<Registration> registrationList;
 }
