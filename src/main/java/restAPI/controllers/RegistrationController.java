@@ -155,7 +155,7 @@ public class RegistrationController {
         Optional<Registration> registration = registrationRepository.findById(registrationId);
         if (registration.isPresent()) {
             if (userInfo.getUsername().equals(registration.get().getName()))
-                return ResponseEntity.badRequest().body(new SimplePayload("you is the owner of this registration"));
+                return ResponseEntity.badRequest().body(new SimplePayload("Đăng ký này đã nằm trong danh sách của bạn"));
 
             Optional<Viewer> viewerOptional = viewerRepository.findByUsername(userInfo.getUsername());
             Viewer viewer;
@@ -167,7 +167,7 @@ public class RegistrationController {
             List<Registration> registrationList = viewer.getRegistrationList();
             for (Registration item : registrationList) {
                 if (item.getId() == registrationId)
-                    return ResponseEntity.badRequest().body(new SimplePayload("you viewed this registration"));
+                    return ResponseEntity.badRequest().body(new SimplePayload("Đăng ký này đã nằm trong danh sách của bạn"));
             }
 
             registrationList.add(registration.get());
@@ -175,7 +175,7 @@ public class RegistrationController {
             return ResponseEntity.ok(new SimplePayload("ok", viewer));
 
         } else {
-            return ResponseEntity.badRequest().body(new SimplePayload("registration is not exist"));
+            return ResponseEntity.badRequest().body(new SimplePayload("Đăng ký này không tồn tại"));
         }
     }
 
